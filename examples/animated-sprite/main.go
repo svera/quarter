@@ -46,7 +46,7 @@ func run() {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Animation demo",
 		Bounds: pixel.R(0, 0, width*zoom, height*zoom),
-		VSync:  true,
+		VSync:  false,
 	}
 	win, err := pixelgl.NewWindow(cfg)
 	if err != nil {

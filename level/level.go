@@ -28,8 +28,10 @@ func (l *Level) Draw(target pixel.Target) {
 		if layer.Grid != nil {
 			for _, t := range layer.Grid.Tiles {
 				pixelCoords := layer.Grid.ToPixels(t.Coords)
-				layer.Grid.Assets[t.Asset].Draw(target, pixel.IM.Moved(pixelCoords))
+				layer.Grid.sprite.Set(layer.Grid.Sheet, layer.Grid.Assets[t.Asset])
+				layer.Grid.sprite.Draw(layer.Grid.batch, pixel.IM.Moved(pixelCoords))
 			}
+			layer.Grid.batch.Draw(target)
 		}
 		if layer.Bounds != nil && l.debug {
 			for _, b := range layer.Bounds {

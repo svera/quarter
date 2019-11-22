@@ -83,10 +83,11 @@ func Load(r io.Reader) ([]Level, error) {
 				level.Layers[i].Image = &img
 			}
 			if currentLayer.Grid.Width != 0 || currentLayer.Grid.Height != 0 {
-				level.Layers[i].Grid = &Grid{
-					Width:  currentLayer.Grid.Width,
-					Height: currentLayer.Grid.Height,
+				sheet, err := quarter.LoadPicture(currentLayer.Grid.Assets.Path)
+				if err != nil {
+					return nil, err
 				}
+				level.Layers[i].Grid = NewGrid(currentLayer.Grid.Width, currentLayer.Grid.Height, sheet)
 				level.Layers[i].Grid.Assets, err = loadGridAssets(currentLayer.Grid.Assets)
 				if err != nil {
 					return nil, err
@@ -120,25 +121,17 @@ func Load(r io.Reader) ([]Level, error) {
 	return levels, nil
 }
 
-func loadGridAssets(assets GridAssets) ([]*pixel.Sprite, error) {
-	img, err := quarter.LoadPicture(assets.Path)
-	if err != nil {
-		return nil, err
-	}
-
-	sprites := make([]*pixel.Sprite, assets.Quantity)
+func loadGridAssets(assets GridAssets) ([]pixel.Rect, error) {
+	frames := make([]pixel.Rect, assets.Quantity)
 	for j := 0; j < assets.Quantity; j++ {
 		x := assets.Width * float64(j)
-		sprite := pixel.NewSprite(
-			img,
-			pixel.R(
-				x,
-				assets.OffsetY,
-				x+assets.Width,
-				assets.OffsetY+assets.Height,
-			),
+		frame := pixel.R(
+			x,
+			assets.OffsetY,
+			x+assets.Width,
+			assets.OffsetY+assets.Height,
 		)
-		sprites[j] = sprite
+		frames[j] = frame
 	}
-	return sprites, nil
+	return frames, nil
 }
