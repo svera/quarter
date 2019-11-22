@@ -1,3 +1,3 @@
 # Quarter
 
-A minimalistic arcade-oriented toolkit on top of [Pixel](github.com/faiface/pixel).
+A minimalistic arcade-oriented toolkit on top of [Pixel](https://github.com/faiface/pixel).
