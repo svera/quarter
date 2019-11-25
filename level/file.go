@@ -80,12 +80,14 @@ func Load(r io.Reader) ([]Level, error) {
 				if err != nil {
 					return nil, err
 				}
-				level.Layers[i].Image = &img
+				level.Layers[i].Image = pixel.NewSprite(img, img.Bounds())
 			}
 			if currentLayer.Grid.Width != 0 || currentLayer.Grid.Height != 0 {
 				level.Layers[i].Grid = &Grid{
-					Width:  currentLayer.Grid.Width,
-					Height: currentLayer.Grid.Height,
+					Width:       currentLayer.Grid.Width,
+					Height:      currentLayer.Grid.Height,
+					assetWidth:  currentLayer.Grid.Assets.Width,
+					assetHeight: currentLayer.Grid.Assets.Height,
 				}
 				level.Layers[i].Grid.Assets, err = loadGridAssets(currentLayer.Grid.Assets)
 				if err != nil {

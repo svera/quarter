@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"image/color"
 	_ "image/png"
@@ -101,8 +100,6 @@ func run() {
 	}
 
 	lvl[0].SetDebug(imd)
-	pretty, _ := json.MarshalIndent(lvl, "", "    ")
-	fmt.Printf("%s\n", pretty)
 
 	last := time.Now()
 	for !win.Closed() {
@@ -166,11 +163,6 @@ func updatePosition(hero *animation.Character, phys *physic.Physics, sol physic.
 		hero.Position = hero.Position.Add(sol.Distance)
 	} else {
 		hero.Position = hero.Position.Add(delta)
-	}
-
-	if hero.Position.Y < 0 {
-		hero.Position.Y = 0
-		phys.StopMovingY()
 	}
 }
 

@@ -17,7 +17,7 @@ type Level struct {
 }
 
 type Layer struct {
-	Image  *pixel.Picture
+	Image  *pixel.Sprite
 	Grid   *Grid
 	Bounds []physic.Shaper
 	Extra  interface{}
@@ -25,6 +25,9 @@ type Layer struct {
 
 func (l *Level) Draw(target pixel.Target) {
 	for _, layer := range l.Layers {
+		if layer.Image != nil {
+			layer.Image.Draw(target, pixel.IM.Moved(layer.Image.Frame().Min))
+		}
 		if layer.Grid != nil {
 			for _, t := range layer.Grid.Tiles {
 				pixelCoords := layer.Grid.ToPixels(t.Coords)
