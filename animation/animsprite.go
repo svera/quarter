@@ -24,13 +24,14 @@ type AnimData struct {
 }
 
 const (
-	Reverse = iota - 1
+	SingleReverse = iota - 2
+	CircularReverse
 	Circular
 	Single
 )
 
 // To convert string values used in sprite definition file to integer values
-var animationCycle = map[string]int{"reverse": -1, "circular": 0, "single": 1}
+var animationCycle = map[string]int{"single_reverse": -2, "circular_reverse": -1, "circular": 0, "single": 1}
 
 type animation struct {
 	frames       []*pixel.Sprite
@@ -80,7 +81,7 @@ func (a *AnimSprite) SetCurrentAnim(ID int) error {
 	if ID != a.currentAnimID {
 		a.currentAnimID = ID
 		a.currentFrameNumber = 0
-		if a.anims[a.currentAnimID].cycle == Reverse {
+		if a.anims[a.currentAnimID].cycle == SingleReverse || a.anims[a.currentAnimID].cycle == CircularReverse {
 			a.currentFrameNumber = a.lastFrame()
 		}
 		a.elapsed = 0
@@ -107,9 +108,20 @@ func (a *AnimSprite) nextFrameIndex(dt float64) int {
 	if a.elapsed <= a.anims[a.currentAnimID].timePerFrame {
 		return a.currentFrameNumber
 	}
-	if a.currentFrameNumber != 0 && a.anims[a.currentAnimID].cycle == Reverse {
+	if a.anims[a.currentAnimID].cycle == CircularReverse {
+		if a.currentFrameNumber == 0 {
+			return len(a.anims[a.currentAnimID].frames) - 1
+		}
 		return a.currentFrameNumber - 1
 	}
+
+	if a.anims[a.currentAnimID].cycle == SingleReverse {
+		if a.currentFrameNumber > 0 {
+			return a.currentFrameNumber - 1
+		}
+		return a.currentFrameNumber
+	}
+
 	if a.isLastFrame(a.currentFrameNumber) && a.anims[a.currentAnimID].cycle == Circular {
 		return 0
 	}
