@@ -109,28 +109,26 @@
                             },
                             {
                                 "asset": 0,
-                                "x": 2,
-                                "y": 2
+                                "x": 0,
+                                "y": -3
                             }
                         ]
                     },
                     "bounds": [
                         {
-                            "type": "box",
-                            "dimensions": {
-                                "x": 64,
-                                "y": 16,
-                                "width": 16,
-                                "height": 16
+                            "type": "box_grid",
+                            "values": {
+                                "x": 0,
+                                "y": -3
                             }
                         },
                         {
-                            "type": "box",
-                            "dimensions": {
-                                "x": 0,
-                                "y": -88,
-                                "width": 256,
-                                "height": 16
+                            "type": "box_free",
+                            "values": {
+                                "min_x": -128,
+                                "min_y": -96,
+                                "max_x": 128,
+                                "max_y": -80
                             }
                         }
                     ]

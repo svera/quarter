@@ -13,9 +13,20 @@ type BoundingBox struct {
 	pixel.Rect
 }
 
-// NewBoundingBox returns a new BoundingBox instance. As Pixel's sprites,
+// NewCenteredBoundingBox returns a new BoundingBox instance. As Pixel's sprites,
 // bounding box coordinates origin is located in its center.
-func NewBoundingBox(x, y, w, h float64) *BoundingBox {
+func NewBoundingBox(min pixel.Vec, max pixel.Vec) *BoundingBox {
+	return &BoundingBox{
+		pixel.Rect{
+			Min: min,
+			Max: max,
+		},
+	}
+}
+
+// NewCenteredBoundingBox returns a new BoundingBox instance. As Pixel's sprites,
+// bounding box coordinates origin is located in its center.
+func NewCenteredBoundingBox(x, y, w, h float64) *BoundingBox {
 	return &BoundingBox{
 		pixel.Rect{
 			Min: pixel.V(x-(w/2), y-(h/2)),

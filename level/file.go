@@ -34,8 +34,8 @@ type LevelsFile struct {
 				Extra interface{}
 			}
 			Bounds []struct {
-				Type       string
-				Dimensions json.RawMessage
+				Type   string
+				Values json.RawMessage
 			}
 			Extra interface{}
 		}
@@ -52,11 +52,16 @@ type GridAssets struct {
 	Height   float64
 }
 
-type BoundRectDimensions struct {
-	X      float64
-	Y      float64
-	Width  float64
-	Height float64
+type BoundRectValues struct {
+	MinX float64 `json:"min_x"`
+	MinY float64 `json:"min_y"`
+	MaxX float64 `json:"max_x"`
+	MaxY float64 `json:"max_y"`
+}
+
+type BoundGridValues struct {
+	X float64
+	Y float64
 }
 
 func Load(r io.Reader) ([]Level, error) {
@@ -80,7 +85,7 @@ func Load(r io.Reader) ([]Level, error) {
 				if err != nil {
 					return nil, err
 				}
-				level.Layers[i].Image = pixel.NewSprite(img, img.Bounds())
+				level.Layers[i].image = pixel.NewSprite(img, img.Bounds())
 			}
 			if currentLayer.Grid.Width != 0 || currentLayer.Grid.Height != 0 {
 				level.Layers[i].Grid = &Grid{
@@ -105,13 +110,21 @@ func Load(r io.Reader) ([]Level, error) {
 			if len(currentLayer.Bounds) > 0 {
 				level.Layers[i].Bounds = make([]physic.Shaper, len(currentLayer.Bounds))
 				for j, bound := range currentLayer.Bounds {
-					if bound.Type == "box" {
-						dimensions := BoundRectDimensions{}
-						err := json.Unmarshal(bound.Dimensions, &dimensions)
+					switch bound.Type {
+					case "box_free":
+						values := BoundRectValues{}
+						err := json.Unmarshal(bound.Values, &values)
 						if err != nil {
-							return nil, fmt.Errorf("Bounds dimensions wrongly formatted")
+							return nil, fmt.Errorf("Bounds values wrongly formatted")
 						}
-						level.Layers[i].Bounds[j] = physic.NewBoundingBox(dimensions.X, dimensions.Y, dimensions.Width, dimensions.Height)
+						level.Layers[i].Bounds[j] = physic.NewBoundingBox(pixel.V(values.MinX, values.MinY), pixel.V(values.MaxX, values.MaxY))
+					case "box_grid":
+						values := BoundGridValues{}
+						err := json.Unmarshal(bound.Values, &values)
+						if err != nil {
+							return nil, fmt.Errorf("Bounds values wrongly formatted")
+						}
+						level.Layers[i].Bounds[j] = level.Layers[i].Grid.TileBoundingBox(pixel.V(values.X, values.Y))
 					}
 				}
 			}
