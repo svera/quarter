@@ -11,8 +11,6 @@
                         "extra": {}
                     },
                     "grid": {
-                        "width": 30,
-                        "height": 20,
                         "assets": {
                             "path": "assets/adventurer3.png",
                             "quantity": 1,
@@ -110,25 +108,23 @@
                             {
                                 "asset": 0,
                                 "x": 0,
-                                "y": -3
+                                "y": -3,
+                                "bounded": true
                             }
                         ]
                     },
                     "bounds": [
                         {
-                            "type": "box_grid",
+                            "type": "box",
                             "values": {
-                                "x": 0,
-                                "y": -3
-                            }
-                        },
-                        {
-                            "type": "box_free",
-                            "values": {
-                                "min_x": -128,
-                                "min_y": -96,
-                                "max_x": 128,
-                                "max_y": -80
+                                "min": {
+                                    "x": -128,
+                                    "y": -96
+                                },
+                                "max": {
+                                    "x": 128,
+                                    "y": -80
+                                }
                             }
                         }
                     ]

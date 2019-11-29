@@ -1,4 +1,4 @@
-package physic_test
+package collision_test
 
 // import (
 // 	"testing"

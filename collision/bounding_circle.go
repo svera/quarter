@@ -1,4 +1,4 @@
-package physic
+package collision
 
 import (
 	"image/color"
@@ -35,8 +35,8 @@ func (bc *BoundingCircle) Shape() Shape {
 	return bc
 }
 
-func (bc *BoundingCircle) Resolve(delta pixel.Vec, others ...Shaper) CollisionSolution {
-	sol := CollisionSolution{}
+func (bc *BoundingCircle) Resolve(delta pixel.Vec, others ...Shaper) Solution {
+	sol := Solution{}
 
 	bcMoved := &BoundingCircle{
 		bc.Moved(delta),
@@ -58,8 +58,8 @@ func (bc *BoundingCircle) Resolve(delta pixel.Vec, others ...Shaper) CollisionSo
 }
 
 // This code is wrong, get the one from bb
-func (bc *BoundingCircle) resolveAgainstBoundingBox(other *BoundingBox, distance pixel.Vec) CollisionSolution {
-	sol := CollisionSolution{
+func (bc *BoundingCircle) resolveAgainstBoundingBox(other *BoundingBox, distance pixel.Vec) Solution {
+	sol := Solution{
 		Object: other,
 	}
 
@@ -69,20 +69,20 @@ func (bc *BoundingCircle) resolveAgainstBoundingBox(other *BoundingBox, distance
 		} else {
 			sol.Distance.X = -(bc.Radius - other.left())
 		}
-		sol.CollisionAxis = CollisionX
+		sol.CollisionAxis = AxisX
 	} else {
 		if distance.Y > 0 {
 			sol.Distance.Y = other.top() - bc.Radius
 		} else {
 			sol.Distance.Y = -(bc.Radius - other.top())
 		}
-		sol.CollisionAxis = CollisionY
+		sol.CollisionAxis = AxisY
 	}
 	return sol
 }
 
-func (bc *BoundingCircle) Draw(color color.RGBA, imd *imdraw.IMDraw, target pixel.Target) {
-	imd.Color = color
+func (bc *BoundingCircle) Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target) {
+	imd.Color = *color
 	imd.Push(bc.Center)
 	imd.Circle(bc.Radius, 0)
 }

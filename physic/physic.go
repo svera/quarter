@@ -12,7 +12,7 @@ const (
 	DirectionRight = 1
 )
 
-type PhysicsParams struct {
+type Params struct {
 	MaxVelocityX float64
 	Acceleration float64
 	Gravity      float64
@@ -28,13 +28,13 @@ type Physics struct {
 	// negative values will move item down, positive ones up
 	velocityY float64
 
-	PhysicsParams
+	Params
 }
 
 // NewPhysics returns a new instance of physics
-func NewPhysics(params PhysicsParams) *Physics {
+func NewPhysics(params Params) *Physics {
 	return &Physics{
-		PhysicsParams: params,
+		Params: params,
 	}
 }
 
@@ -67,6 +67,7 @@ func (p *Physics) Jump(impulse float64) {
 }
 
 // Displacement returns the movement an item must do both in X and Y axis
+// after a dt time has passed
 func (p *Physics) Displacement(dt float64) pixel.Vec {
 	p.velocityY -= p.Gravity * dt
 	return pixel.V(p.velocityX*dt, p.velocityY*dt)
@@ -77,7 +78,7 @@ func (p *Physics) IsStopped() bool {
 	return p.velocityX == 0
 }
 
-func (p *Physics) IsJumping() bool {
+func (p *Physics) IsMovingUp() bool {
 	return p.velocityY > 0
 }
 
@@ -89,8 +90,8 @@ func (p *Physics) StopMovingX() {
 	p.velocityX = 0
 }
 
-// IsFalling returns true if the item is falling
-func (p *Physics) IsFalling() bool {
+// IsMovingDown returns true if the item has a negative velocity
+func (p *Physics) IsMovingDown() bool {
 	return p.velocityY < 0
 }
 

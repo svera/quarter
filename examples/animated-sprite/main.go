@@ -15,6 +15,7 @@ import (
 	"github.com/faiface/pixel/text"
 	"github.com/svera/quarter"
 	"github.com/svera/quarter/animation"
+	"github.com/svera/quarter/collision"
 	"github.com/svera/quarter/level"
 	"github.com/svera/quarter/physic"
 	"golang.org/x/image/colornames"
@@ -68,7 +69,7 @@ func run() {
 	fmt.Fprintln(txt, "Arcade")
 
 	phys := physic.NewPhysics(
-		physic.PhysicsParams{
+		physic.Params{
 			MaxVelocityX: 50,
 			Acceleration: 75,
 			Gravity:      112,
@@ -79,7 +80,7 @@ func run() {
 	if err != nil {
 		panic(err)
 	}
-	circle := physic.NewBoundingCircle(0, 40, 18)
+	circle := collision.NewBoundingCircle(0, 40, 18)
 
 	// Canvas origin of coordinates will be at its center
 	canvas := pixelgl.NewCanvas(pixel.R(-width/2, -height/2, width/2, height/2))
@@ -90,8 +91,9 @@ func run() {
 	)
 
 	imd := imdraw.New(nil)
-	red := color.RGBA{255, 0, 0, 16}
-	green := color.RGBA{0, 255, 0, 16}
+	red := &color.RGBA{255, 0, 0, 16}
+	green := &color.RGBA{0, 255, 0, 16}
+	blue := &color.RGBA{0, 0, 255, 16}
 
 	data, err := ioutil.ReadFile("levels.json")
 	lvl, err := level.Load(bytes.NewReader(data))
@@ -99,7 +101,7 @@ func run() {
 		panic(err)
 	}
 
-	lvl[0].SetDebug(imd)
+	lvl[0].SetDebug(imd, blue)
 
 	last := time.Now()
 	for !win.Closed() {
@@ -148,15 +150,15 @@ func readInput(hero *animation.Character, phys *physic.Physics, win *pixelgl.Win
 	}
 }
 
-func updatePosition(hero *animation.Character, phys *physic.Physics, sol physic.CollisionSolution, delta pixel.Vec) {
-	if sol.CollisionAxis == physic.CollisionX {
+func updatePosition(hero *animation.Character, phys *physic.Physics, sol collision.Solution, delta pixel.Vec) {
+	if sol.CollisionAxis == collision.AxisX {
 		phys.StopMovingX()
 		hero.Position = hero.Position.Add(pixel.V(sol.Distance.X, delta.Y))
-	} else if sol.CollisionAxis == physic.CollisionY {
+	} else if sol.CollisionAxis == collision.AxisY {
 		phys.StopMovingY()
 		hero.Position = hero.Position.Add(pixel.V(delta.X, sol.Distance.Y))
-	} else if sol.CollisionAxis == physic.CollisionBoth {
-		if phys.IsJumping() {
+	} else if sol.CollisionAxis == collision.AxisBoth {
+		if phys.IsMovingUp() {
 			phys.StopMovingY()
 		}
 		phys.StopMovingX()
@@ -166,10 +168,10 @@ func updatePosition(hero *animation.Character, phys *physic.Physics, sol physic.
 	}
 }
 
-func updateAnim(hero *animation.Character, phys *physic.Physics, sol physic.CollisionSolution) {
-	if phys.IsJumping() {
+func updateAnim(hero *animation.Character, phys *physic.Physics, sol collision.Solution) {
+	if phys.IsMovingUp() {
 		hero.SetCurrentAnim(jumping)
-	} else if phys.IsFalling() && sol.CollisionAxis != physic.CollisionY {
+	} else if phys.IsMovingDown() && sol.CollisionAxis != collision.AxisY {
 		hero.SetCurrentAnim(falling)
 	} else if !phys.IsStopped() {
 		hero.SetCurrentAnim(running)

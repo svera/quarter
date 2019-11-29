@@ -6,7 +6,7 @@ import (
 	"io"
 
 	"github.com/svera/quarter"
-	"github.com/svera/quarter/physic"
+	"github.com/svera/quarter/collision"
 )
 
 // BoundedAnimFile is the struct of the JSON file used to store an animated sprite with attached bounding boxes
@@ -15,19 +15,19 @@ type BoundedAnimFile struct {
 	Sheet   string
 	Anims   []struct {
 		AnimData
-		Boxes []physic.BoundingBox
+		Boxes []collision.BoundingBox
 	}
 }
 
 type Character struct {
 	AnimSprite
-	BoundingBoxes map[int][]physic.BoundingBox
+	BoundingBoxes map[int][]collision.BoundingBox
 }
 
 // LoadCharacter loads a character data from reader
 func LoadCharacter(r io.Reader, x, y float64) (*Character, error) {
 	chtr := &Character{
-		BoundingBoxes: make(map[int][]physic.BoundingBox),
+		BoundingBoxes: make(map[int][]collision.BoundingBox),
 	}
 	data := &BoundedAnimFile{}
 	err := json.NewDecoder(r).Decode(data)
@@ -52,7 +52,7 @@ func LoadCharacter(r io.Reader, x, y float64) (*Character, error) {
 }
 
 // physic.BoundingBox returns the character bounding box information updated to its current position
-func (c *Character) BoundingBox() *physic.BoundingBox {
+func (c *Character) BoundingBox() *collision.BoundingBox {
 	bb := c.BoundingBoxes[c.currentAnimID][c.currentFrameNumber]
 	bb.Rect = bb.Moved(c.Position)
 	return &bb

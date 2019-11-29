@@ -8,7 +8,7 @@ import (
 
 	"github.com/faiface/pixel"
 	"github.com/svera/quarter"
-	"github.com/svera/quarter/physic"
+	"github.com/svera/quarter/collision"
 )
 
 // LevelsFile is the serialized form of Levels
@@ -22,14 +22,13 @@ type LevelsFile struct {
 				Path string
 			}
 			Grid struct {
-				Width  int
-				Height int
 				Assets GridAssets
 				Tiles  []struct {
-					Asset int
-					X     float64
-					Y     float64
-					Extra interface{}
+					Asset   int
+					X       float64
+					Y       float64
+					Bounded bool
+					Extra   interface{}
 				}
 				Extra interface{}
 			}
@@ -46,22 +45,17 @@ type LevelsFile struct {
 type GridAssets struct {
 	Path     string
 	Quantity int
-	OffsetX  float64 `json:"offset_x"`
-	OffsetY  float64 `json:"offset_y"`
-	Width    float64
-	Height   float64
+	Offset   struct {
+		X float64
+		Y float64
+	}
+	Width  float64
+	Height float64
 }
 
 type BoundRectValues struct {
-	MinX float64 `json:"min_x"`
-	MinY float64 `json:"min_y"`
-	MaxX float64 `json:"max_x"`
-	MaxY float64 `json:"max_y"`
-}
-
-type BoundGridValues struct {
-	X float64
-	Y float64
+	Min pixel.Vec
+	Max pixel.Vec
 }
 
 func Load(r io.Reader) ([]Level, error) {
@@ -87,47 +81,45 @@ func Load(r io.Reader) ([]Level, error) {
 				}
 				level.Layers[i].image = pixel.NewSprite(img, img.Bounds())
 			}
-			if currentLayer.Grid.Width != 0 || currentLayer.Grid.Height != 0 {
+			boundedTiles := make([]collision.Shaper, 0, len(currentLayer.Grid.Tiles))
+			boundShapes := make([]collision.Shaper, 0, len(currentLayer.Bounds))
+			if len(currentLayer.Grid.Tiles) != 0 {
 				level.Layers[i].Grid = &Grid{
-					Width:       currentLayer.Grid.Width,
-					Height:      currentLayer.Grid.Height,
-					assetWidth:  currentLayer.Grid.Assets.Width,
-					assetHeight: currentLayer.Grid.Assets.Height,
+					tileWidth:  currentLayer.Grid.Assets.Width,
+					tileHeight: currentLayer.Grid.Assets.Height,
 				}
 				level.Layers[i].Grid.Assets, err = loadGridAssets(currentLayer.Grid.Assets)
 				if err != nil {
 					return nil, err
 				}
 				level.Layers[i].Grid.Tiles = make([]GridTile, len(currentLayer.Grid.Tiles))
-				for k := range currentLayer.Grid.Tiles {
+				for k, val := range currentLayer.Grid.Tiles {
 					tl := GridTile{
-						Asset:  currentLayer.Grid.Tiles[k].Asset,
-						Coords: pixel.V(currentLayer.Grid.Tiles[k].X, currentLayer.Grid.Tiles[k].Y),
+						Asset:  val.Asset,
+						Coords: pixel.V(val.X, val.Y),
 					}
 					level.Layers[i].Grid.Tiles[k] = tl
+					if val.Bounded {
+						boundedTiles = append(boundedTiles, level.Layers[i].Grid.TileBoundingBox(pixel.V(val.X, val.Y)))
+					}
 				}
 			}
 			if len(currentLayer.Bounds) > 0 {
-				level.Layers[i].Bounds = make([]physic.Shaper, len(currentLayer.Bounds))
-				for j, bound := range currentLayer.Bounds {
+				for _, bound := range currentLayer.Bounds {
 					switch bound.Type {
-					case "box_free":
+					case "box":
 						values := BoundRectValues{}
 						err := json.Unmarshal(bound.Values, &values)
 						if err != nil {
 							return nil, fmt.Errorf("Bounds values wrongly formatted")
 						}
-						level.Layers[i].Bounds[j] = physic.NewBoundingBox(pixel.V(values.MinX, values.MinY), pixel.V(values.MaxX, values.MaxY))
-					case "box_grid":
-						values := BoundGridValues{}
-						err := json.Unmarshal(bound.Values, &values)
-						if err != nil {
-							return nil, fmt.Errorf("Bounds values wrongly formatted")
-						}
-						level.Layers[i].Bounds[j] = level.Layers[i].Grid.TileBoundingBox(pixel.V(values.X, values.Y))
+						boundShapes = append(boundShapes, collision.NewBoundingBox(pixel.V(values.Min.X, values.Min.Y), pixel.V(values.Max.X, values.Max.Y)))
 					}
 				}
 			}
+			level.Layers[i].Bounds = make([]collision.Shaper, 0, len(boundShapes)+len(boundedTiles))
+			level.Layers[i].Bounds = append(level.Layers[i].Bounds, boundShapes...)
+			level.Layers[i].Bounds = append(level.Layers[i].Bounds, boundedTiles...)
 		}
 		levels = append(levels, level)
 	}
@@ -148,9 +140,9 @@ func loadGridAssets(assets GridAssets) ([]*pixel.Sprite, error) {
 			img,
 			pixel.R(
 				x,
-				assets.OffsetY,
+				assets.Offset.Y,
 				x+assets.Width,
-				assets.OffsetY+assets.Height,
+				assets.Offset.Y+assets.Height,
 			),
 		)
 		sprites[j] = sprite

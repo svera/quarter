@@ -1,4 +1,4 @@
-package physic
+package collision
 
 import (
 	"image/color"
@@ -51,19 +51,19 @@ func (bb *BoundingBox) Shape() Shape {
 
 // Resolve checks if the bounding box will collide with another bounding box if it moves
 // a certain delta
-func (bb *BoundingBox) Resolve(delta pixel.Vec, others ...Shaper) CollisionSolution {
-	sol := CollisionSolution{}
+func (bb *BoundingBox) Resolve(delta pixel.Vec, others ...Shaper) Solution {
+	sol := Solution{}
 
 	for _, other := range others {
 		switch t := other.Shape().(type) {
 		case *BoundingBox:
 			sol = bb.resolveAgainstBoundingBox(t, delta)
-			if sol.CollisionAxis != CollisionNone {
+			if sol.CollisionAxis != AxisNone {
 				return sol
 			}
 		case *BoundingCircle:
 			sol = bb.resolveAgainstBoundingCircle(t, delta)
-			if sol.CollisionAxis != CollisionNone {
+			if sol.CollisionAxis != AxisNone {
 				return sol
 			}
 		}
@@ -71,15 +71,15 @@ func (bb *BoundingBox) Resolve(delta pixel.Vec, others ...Shaper) CollisionSolut
 	return sol
 }
 
-func (bb *BoundingBox) resolveAgainstBoundingBox(other *BoundingBox, delta pixel.Vec) CollisionSolution {
+func (bb *BoundingBox) resolveAgainstBoundingBox(other *BoundingBox, delta pixel.Vec) Solution {
 	bbMoved := &BoundingBox{
 		bb.Moved(delta),
 	}
 
 	intersectRect := bbMoved.Intersect(other.Rect)
-	sol := CollisionSolution{
+	sol := Solution{
 		Object:        other,
-		CollisionAxis: CollisionNone,
+		CollisionAxis: AxisNone,
 	}
 
 	if intersectRect == pixel.ZR {
@@ -94,19 +94,19 @@ func (bb *BoundingBox) resolveAgainstBoundingBox(other *BoundingBox, delta pixel
 		} else {
 			sol.Distance.X = -(bb.right() - other.left())
 		}
-		sol.CollisionAxis = CollisionX
+		sol.CollisionAxis = AxisX
 	} else {
 		if distance.Y > 0 {
 			sol.Distance.Y = other.bottom() - bb.top()
 		} else {
 			sol.Distance.Y = -(bb.bottom() - other.top())
 		}
-		sol.CollisionAxis = CollisionY
+		sol.CollisionAxis = AxisY
 	}
 	return sol
 }
 
-func (bb *BoundingBox) resolveAgainstBoundingCircle(other *BoundingCircle, delta pixel.Vec) CollisionSolution {
+func (bb *BoundingBox) resolveAgainstBoundingCircle(other *BoundingCircle, delta pixel.Vec) Solution {
 	bbMoved := &BoundingBox{
 		bb.Moved(delta),
 	}
@@ -116,23 +116,23 @@ func (bb *BoundingBox) resolveAgainstBoundingCircle(other *BoundingCircle, delta
 	d := other.Circle.IntersectRect(bbMoved.Rect)
 
 	if d == pixel.ZV {
-		return CollisionSolution{
-			CollisionAxis: CollisionNone,
+		return Solution{
+			CollisionAxis: AxisNone,
 		}
 	}
 
-	sol := CollisionSolution{
+	sol := Solution{
 		Object:        other,
 		Distance:      d,
-		CollisionAxis: CollisionBoth,
+		CollisionAxis: AxisBoth,
 	}
 
 	if math.Abs(distance.X) > math.Abs(distance.Y) && d == pixel.ZV {
-		sol.CollisionAxis = CollisionX
+		sol.CollisionAxis = AxisX
 	}
 
 	if math.Abs(distance.X) < math.Abs(distance.Y) && d == pixel.ZV {
-		sol.CollisionAxis = CollisionY
+		sol.CollisionAxis = AxisY
 	}
 
 	return sol
@@ -159,8 +159,8 @@ func (bb *BoundingBox) bottom() float64 {
 }
 
 // Draw draws the bounding box surface on the passed target with the specified color for debugging purposes
-func (bb *BoundingBox) Draw(color color.RGBA, imd *imdraw.IMDraw, target pixel.Target) {
-	imd.Color = color
+func (bb *BoundingBox) Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target) {
+	imd.Color = *color
 	imd.Push(
 		pixel.V(bb.left(), bb.bottom()),
 		pixel.V(bb.right(), bb.top()),

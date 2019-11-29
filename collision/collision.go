@@ -1,4 +1,4 @@
-package physic
+package collision
 
 import (
 	"image/color"
@@ -7,9 +7,9 @@ import (
 	"github.com/faiface/pixel/imdraw"
 )
 
-// CollisionSolution holds information about a collision if it happened, in which axis did and
+// Solution holds information about a collision if it happened, in which axis did and
 // what's the maximum distance an object can move without colliding with the target object
-type CollisionSolution struct {
+type Solution struct {
 	CollisionAxis int
 	Object        Shaper
 	Distance      pixel.Vec
@@ -17,10 +17,10 @@ type CollisionSolution struct {
 
 // Possible collision axis values
 const (
-	CollisionNone = iota
-	CollisionX    = 1
-	CollisionY    = 2
-	CollisionBoth = 3
+	AxisNone = iota
+	AxisX    = 1
+	AxisY    = 2
+	AxisBoth = 3
 )
 
 type Shaper interface {
@@ -29,6 +29,6 @@ type Shaper interface {
 
 type Shape interface {
 	Collides(Shaper) bool
-	Resolve(pixel.Vec, ...Shaper) CollisionSolution
-	Draw(color color.RGBA, imd *imdraw.IMDraw, target pixel.Target)
+	Resolve(pixel.Vec, ...Shaper) Solution
+	Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target)
 }

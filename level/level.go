@@ -5,14 +5,14 @@ import (
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
-	"github.com/svera/quarter/physic"
+	"github.com/svera/quarter/collision"
 )
 
 // Level holds the information needed to build a level
 type Level struct {
 	Layers []Layer
 	imd    *imdraw.IMDraw
-	debug  bool
+	debug  *color.RGBA
 	Extra  interface{}
 }
 
@@ -20,7 +20,7 @@ type Level struct {
 type Layer struct {
 	image  *pixel.Sprite
 	Grid   *Grid
-	Bounds []physic.Shaper
+	Bounds []collision.Shaper
 	Extra  interface{}
 }
 
@@ -36,15 +36,15 @@ func (l *Level) Draw(target pixel.Target) {
 				layer.Grid.Assets[t.Asset].Draw(target, pixel.IM.Moved(pixelCoords))
 			}
 		}
-		if layer.Bounds != nil && l.debug {
+		if layer.Bounds != nil && l.debug != nil {
 			for _, b := range layer.Bounds {
-				b.Shape().Draw(color.RGBA{0, 0, 255, 16}, l.imd, target)
+				b.Shape().Draw(l.debug, l.imd, target)
 			}
 		}
 	}
 }
 
-func (l *Level) SetDebug(imd *imdraw.IMDraw) {
+func (l *Level) SetDebug(imd *imdraw.IMDraw, col *color.RGBA) {
 	l.imd = imd
-	l.debug = true
+	l.debug = col
 }
