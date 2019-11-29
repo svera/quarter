@@ -28,17 +28,17 @@ type LevelsFile struct {
 					X       float64
 					Y       float64
 					Bounded bool
-					Extra   interface{}
+					Extra   json.RawMessage
 				}
-				Extra interface{}
+				Extra json.RawMessage
 			}
 			Bounds []struct {
 				Type   string
 				Values json.RawMessage
 			}
-			Extra interface{}
+			Extra json.RawMessage
 		}
-		Extra interface{}
+		Extra json.RawMessage
 	}
 }
 

@@ -15,8 +15,6 @@ The following is an example of a level file, stored as JSON:
                             "extra": {}
                         },
                         "grid": {
-                            "width": 30,
-                            "height": 20,
                             "assets": {
                                 "path": "",
                                 "quantity": 5,
@@ -33,7 +31,7 @@ The following is an example of a level file, stored as JSON:
                                     "extra": ""
                                 }
                             ],
-                            "extra": {}    
+                            "extra": {}
                         },
                         "bounds": [
                             {
