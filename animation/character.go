@@ -19,6 +19,8 @@ type BoundedAnimFile struct {
 	}
 }
 
+// Character is a wrapper around both AnimSprite and BoundingBox that associates
+// both to make "solid" animated sprites
 type Character struct {
 	AnimSprite
 	BoundingBoxes map[int][]collision.BoundingBox
@@ -51,7 +53,7 @@ func LoadCharacter(r io.Reader, x, y float64) (*Character, error) {
 	return chtr, nil
 }
 
-// physic.BoundingBox returns the character bounding box information updated to its current position
+// BoundingBox returns the character bounding box information updated to its current position
 func (c *Character) BoundingBox() *collision.BoundingBox {
 	bb := c.BoundingBoxes[c.currentAnimID][c.currentFrameNumber]
 	bb.Rect = bb.Moved(c.Position)

@@ -13,8 +13,7 @@ type BoundingBox struct {
 	pixel.Rect
 }
 
-// NewCenteredBoundingBox returns a new BoundingBox instance. As Pixel's sprites,
-// bounding box coordinates origin is located in its center.
+// NewBoundingBox returns a new BoundingBox instance.
 func NewBoundingBox(min pixel.Vec, max pixel.Vec) *BoundingBox {
 	return &BoundingBox{
 		pixel.Rect{
@@ -35,16 +34,18 @@ func NewCenteredBoundingBox(x, y, w, h float64) *BoundingBox {
 	}
 }
 
+// Collides returns true if the bounding box collides with the passed shape
 func (bb *BoundingBox) Collides(other Shaper) bool {
 	switch t := other.Shape().(type) {
 	case *BoundingBox:
-		return bb.Intersect(t.Rect) != pixel.ZR
+		return bb.Intersects(t.Rect)
 	case *BoundingCircle:
 		return bb.IntersectCircle(t.Circle) != pixel.ZV
 	}
 	return false
 }
 
+// Shape returns the BoundingBox instance
 func (bb *BoundingBox) Shape() Shape {
 	return bb
 }
