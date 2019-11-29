@@ -14,8 +14,10 @@
                         "assets": {
                             "path": "assets/adventurer3.png",
                             "quantity": 1,
-                            "offset_x": 0,
-                            "offset_y": 2,
+                            "offset": {
+                                "x": 0,
+                                "y": 2
+                            },
                             "width": 16,
                             "height": 16
                         },

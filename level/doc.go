@@ -18,8 +18,10 @@ The following is an example of a level file, stored as JSON:
                             "assets": {
                                 "path": "",
                                 "quantity": 5,
-                                "offset_x": 0,
-                                "offset_y": 0,
+                                "offset": {
+                                    "x": 0,
+                                    "y": 0
+                                }
                                 "width": 16,
                                 "height": 16
                             },
