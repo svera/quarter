@@ -18,6 +18,7 @@ import (
 	"github.com/svera/quarter/collision"
 	"github.com/svera/quarter/level"
 	"github.com/svera/quarter/physic"
+	"github.com/svera/quarter/textfx"
 	"golang.org/x/image/colornames"
 )
 
@@ -65,6 +66,7 @@ func run() {
 
 	atlas := text.NewAtlas(face, text.ASCII)
 	txt := text.New(pixel.V(100, 500), atlas)
+	txtFx := textfx.NewTextFX(0.5)
 	txt.Color = color.Black
 	fmt.Fprintln(txt, "Arcade")
 
@@ -123,7 +125,7 @@ func run() {
 		circle.Draw(green, imd, canvas)
 		imd.Draw(canvas)
 		canvas.Draw(win, pixel.IM.Moved(win.Bounds().Center()).Scaled(win.Bounds().Center(), zoom))
-		txt.Draw(win, pixel.IM)
+		txtFx.DrawBlinking(txt, win, pixel.IM, dt)
 		win.Update()
 
 		frames++
