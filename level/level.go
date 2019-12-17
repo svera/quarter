@@ -10,6 +10,7 @@ import (
 
 // Level holds the information needed to build a level
 type Level struct {
+	Limits pixel.Rect
 	Layers []Layer
 	imd    *imdraw.IMDraw
 	debug  *color.RGBA

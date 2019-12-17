@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/faiface/pixel"
 	"github.com/svera/quarter"
 	"github.com/svera/quarter/collision"
 )
@@ -58,4 +59,14 @@ func (c *Character) BoundingBox() *collision.BoundingBox {
 	bb := c.BoundingBoxes[c.currentAnimID][c.currentFrameNumber]
 	bb.Rect = bb.Moved(c.Position)
 	return &bb
+}
+
+func (c *Character) InBoundsX(delta pixel.Vec, limits pixel.Rect) bool {
+	return c.BoundingBox().Min.X+delta.X > limits.Min.X &&
+		c.BoundingBox().Max.X+delta.X < limits.Max.X
+}
+
+func (c *Character) InBoundsY(delta pixel.Vec, limits pixel.Rect) bool {
+	return c.BoundingBox().Min.Y+delta.Y > limits.Min.Y &&
+		c.BoundingBox().Max.Y+delta.Y < limits.Max.Y
 }

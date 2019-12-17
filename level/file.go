@@ -16,6 +16,10 @@ type LevelsFile struct {
 	Version string
 	Levels  []struct {
 		Name   string
+		Limits struct {
+			Min pixel.Vec
+			Max pixel.Vec
+		}
 		Layers []struct {
 			Name  string
 			Image struct {
@@ -71,7 +75,12 @@ func Load(r io.Reader) ([]Level, error) {
 	}
 
 	for _, currentLevel := range data.Levels {
-		level := Level{}
+		level := Level{Limits: pixel.R(
+			currentLevel.Limits.Min.X,
+			currentLevel.Limits.Min.Y,
+			currentLevel.Limits.Max.X,
+			currentLevel.Limits.Max.Y,
+		)}
 		for i, currentLayer := range currentLevel.Layers {
 			level.Layers = append(level.Layers, Layer{})
 			if path := strings.TrimSpace(currentLayer.Image.Path); path != "" {

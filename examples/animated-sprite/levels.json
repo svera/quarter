@@ -3,6 +3,16 @@
     "levels": [
         {
             "name": "level 1",
+            "limits": {
+                "min": {
+                    "x": -128,
+                    "y": -96
+                },
+                "max": {
+                    "x": 128,
+                    "y": 96
+                }
+            },
             "layers": [
                 {
                     "name": "background",
