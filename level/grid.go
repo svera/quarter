@@ -22,8 +22,11 @@ type GridTile struct {
 }
 
 // NewGrid returns a new Grid instance
-func NewGrid() *Grid {
-	return &Grid{}
+func NewGrid(w, h float64) *Grid {
+	return &Grid{
+		tileWidth:  w,
+		tileHeight: h,
+	}
 }
 
 // ToPixels transforms grid coordinates of a tile to its center coordinates in pixels.
