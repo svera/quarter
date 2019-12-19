@@ -77,16 +77,16 @@ func (bb *BoundingBox) resolveAgainstBoundingBox(other *BoundingBox, delta pixel
 		bb.Moved(delta),
 	}
 
-	intersectRect := bbMoved.Intersect(other.Rect)
 	sol := Solution{
 		Object:        other,
 		CollisionAxis: AxisNone,
 	}
 
-	if intersectRect == pixel.ZR {
+	if !bbMoved.Intersects(other.Rect) {
 		return sol
 	}
 
+	intersectRect := bbMoved.Intersect(other.Rect)
 	distance := bbMoved.Center().To(other.Center())
 
 	if math.Abs(intersectRect.W()) <= math.Abs(intersectRect.H()) {
