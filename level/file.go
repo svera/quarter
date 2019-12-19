@@ -13,7 +13,7 @@ import (
 
 // Returned errors
 const (
-	ErrorWrongFileFormat       = "Couldn't parse loaded levels file"
+	ErrorWrongFileFormat       = "Loaded levels file is not a valid JSON"
 	ErrorVersionNotSupported   = "Version not supported"
 	ErrorNoLevels              = "Levels file must have at least one level declared, none found"
 	ErrorBoundTypeNotSupported = "Bound type \"%s\" is not supported"
