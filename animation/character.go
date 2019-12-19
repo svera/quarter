@@ -28,7 +28,7 @@ type Character struct {
 }
 
 // LoadCharacter loads a character data from reader
-func LoadCharacter(r io.Reader, x, y float64) (*Character, error) {
+func LoadCharacter(r io.Reader, pos pixel.Vec) (*Character, error) {
 	chtr := &Character{
 		BoundingBoxes: make(map[int][]collision.BoundingBox),
 	}
@@ -44,7 +44,7 @@ func LoadCharacter(r io.Reader, x, y float64) (*Character, error) {
 	if err != nil {
 		return chtr, err
 	}
-	chtr.AnimSprite = *NewAnimSprite(x, y, len(data.Anims))
+	chtr.AnimSprite = *NewAnimSprite(pos, len(data.Anims))
 	for i, an := range data.Anims {
 		chtr.AddAnim(i, pic, an.YOffset, an.Width, an.Height, an.Frames, an.Duration, an.Cycle)
 		for _, bb := range an.Boxes {

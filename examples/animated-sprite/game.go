@@ -46,7 +46,7 @@ func NewGame(width, height float64) *Game {
 		panic(err)
 	}
 
-	hero, err := animation.LoadCharacter(r, 64, 32)
+	hero, err := animation.LoadCharacter(r, pixel.V(64, 32))
 	if err != nil {
 		panic(err)
 	}

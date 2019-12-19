@@ -50,10 +50,10 @@ type AnimSprite struct {
 }
 
 // NewAnimSprite returns a new AnimSprite instance to be drawn at position x, y
-func NewAnimSprite(x, y float64, numberAnims int) *AnimSprite {
+func NewAnimSprite(pos pixel.Vec, numberAnims int) *AnimSprite {
 	return &AnimSprite{
 		anims:    make([]*animation, numberAnims),
-		Position: pixel.V(x, y),
+		Position: pos,
 		Dir:      1,
 	}
 }
