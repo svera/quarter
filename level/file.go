@@ -11,6 +11,15 @@ import (
 	"github.com/svera/quarter/collision"
 )
 
+// Returned errors
+const (
+	ErrorWrongFileFormat       = "Couldn't parse loaded levels file"
+	ErrorVersionNotSupported   = "Version not supported"
+	ErrorNoLevels              = "Levels file must have at least one level declared, none found"
+	ErrorBoundTypeNotSupported = "Bound type \"%s\" is not supported"
+	ErrorWrongBoundValues      = "Wrong or missing bound values"
+)
+
 // LevelsFile is the serialized form of Levels
 type LevelsFile struct {
 	Version string
@@ -62,6 +71,7 @@ type BoundRectValues struct {
 	Max pixel.Vec
 }
 
+// Load validates a levels file and returns its information as a []Level
 func Load(r io.Reader) ([]Level, error) {
 	data := LevelsFile{}
 	levels := make([]Level, len(data.Levels))
@@ -70,8 +80,13 @@ func Load(r io.Reader) ([]Level, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if data.Version != "1" {
-		return nil, fmt.Errorf("Version not supported")
+		return nil, fmt.Errorf(ErrorVersionNotSupported)
+	}
+
+	if len(data.Levels) == 0 {
+		return nil, fmt.Errorf(ErrorNoLevels)
 	}
 
 	for _, currentLevel := range data.Levels {
@@ -120,9 +135,11 @@ func Load(r io.Reader) ([]Level, error) {
 						values := BoundRectValues{}
 						err := json.Unmarshal(bound.Values, &values)
 						if err != nil {
-							return nil, fmt.Errorf("Bounds values wrongly formatted")
+							return nil, fmt.Errorf(ErrorWrongBoundValues)
 						}
 						boundShapes = append(boundShapes, collision.NewBoundingBox(pixel.V(values.Min.X, values.Min.Y), pixel.V(values.Max.X, values.Max.Y)))
+					default:
+						return nil, fmt.Errorf(ErrorBoundTypeNotSupported, bound.Type)
 					}
 				}
 			}
