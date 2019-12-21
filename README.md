@@ -14,3 +14,11 @@ that allowed me and others to have fun developing arcade games.
 * Modular, just include those packages you're interested in.
 * Well tested, providing a rock-solid foundation for your games.
 * Fast, performance should be the best it can, provided that this goal does not collide with the previous ones.
+
+## Features
+
+* Animated sprites with `animation` subpackage.
+* Collision detection and handling using AABB in `collision` subpackage.
+* Level loading with layering, grid and custom properties support in `level` subpackage.
+* Simple game status management with `scene` subpackage.
+* Text effects with `textfx` subpackage.
