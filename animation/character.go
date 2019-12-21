@@ -16,7 +16,7 @@ type BoundedAnimFile struct {
 	Sheet   string
 	Anims   []struct {
 		AnimData
-		Boxes []collision.BoundingBox
+		BoundingShapes []collision.BoundingBox `json:"bounding_shapes"`
 	}
 }
 
@@ -24,13 +24,13 @@ type BoundedAnimFile struct {
 // both to make "solid" animated sprites
 type Character struct {
 	AnimSprite
-	BoundingBoxes map[int][]collision.BoundingBox
+	BoundingShapes map[int][]collision.BoundingBox
 }
 
 // LoadCharacter loads a character data from reader
 func LoadCharacter(r io.Reader, pos pixel.Vec) (*Character, error) {
 	chtr := &Character{
-		BoundingBoxes: make(map[int][]collision.BoundingBox),
+		BoundingShapes: make(map[int][]collision.BoundingBox),
 	}
 	data := &BoundedAnimFile{}
 	err := json.NewDecoder(r).Decode(data)
@@ -47,26 +47,26 @@ func LoadCharacter(r io.Reader, pos pixel.Vec) (*Character, error) {
 	chtr.AnimSprite = *NewAnimSprite(pos, len(data.Anims))
 	for i, an := range data.Anims {
 		chtr.AddAnim(i, pic, an.YOffset, an.Width, an.Height, an.Frames, an.Duration, an.Cycle)
-		for _, bb := range an.Boxes {
-			chtr.BoundingBoxes[i] = append(chtr.BoundingBoxes[i], bb)
+		for _, bb := range an.BoundingShapes {
+			chtr.BoundingShapes[i] = append(chtr.BoundingShapes[i], bb)
 		}
 	}
 	return chtr, nil
 }
 
-// BoundingBox returns the character bounding box information updated to its current position
-func (c *Character) BoundingBox() *collision.BoundingBox {
-	bb := c.BoundingBoxes[c.currentAnimID][c.currentFrameNumber]
+// BoundingShape returns the character bounding box information updated to its current position
+func (c *Character) BoundingShape() *collision.BoundingBox {
+	bb := c.BoundingShapes[c.currentAnimID][c.currentFrameNumber]
 	bb.Rect = bb.Moved(c.Position)
 	return &bb
 }
 
 func (c *Character) InBoundsX(delta pixel.Vec, limits pixel.Rect) bool {
-	return c.BoundingBox().Min.X+delta.X > limits.Min.X &&
-		c.BoundingBox().Max.X+delta.X < limits.Max.X
+	return c.BoundingShape().Min.X+delta.X > limits.Min.X &&
+		c.BoundingShape().Max.X+delta.X < limits.Max.X
 }
 
 func (c *Character) InBoundsY(delta pixel.Vec, limits pixel.Rect) bool {
-	return c.BoundingBox().Min.Y+delta.Y > limits.Min.Y &&
-		c.BoundingBox().Max.Y+delta.Y < limits.Max.Y
+	return c.BoundingShape().Min.Y+delta.Y > limits.Min.Y &&
+		c.BoundingShape().Max.Y+delta.Y < limits.Max.Y
 }

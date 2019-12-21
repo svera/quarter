@@ -87,7 +87,7 @@ func (g *Game) Loop(win *pixelgl.Window, dt float64) string {
 
 	g.readInput(win, dt)
 	delta := g.phys.Displacement(dt)
-	sol := g.hero.BoundingBox().Resolve(delta, g.levels[0].Layers[0].Bounds...)
+	sol := g.hero.BoundingShape().Resolve(delta, g.levels[0].Layers[0].Bounds...)
 
 	if !g.hero.InBoundsX(delta, g.levels[0].Limits) {
 		delta.X = 0
@@ -100,7 +100,7 @@ func (g *Game) Loop(win *pixelgl.Window, dt float64) string {
 	g.canvas.Clear(colornames.Skyblue)
 	g.levels[0].Draw(g.canvas)
 	g.hero.Draw(g.canvas, dt)
-	g.hero.BoundingBox().Draw(g.red, g.imd, g.canvas)
+	g.hero.BoundingShape().Draw(g.red, g.imd, g.canvas)
 	g.circle.Draw(g.green, g.imd, g.canvas)
 	g.imd.Draw(g.canvas)
 	g.canvas.Draw(win, pixel.IM.Moved(win.Bounds().Center()).Scaled(win.Bounds().Center(), zoom))

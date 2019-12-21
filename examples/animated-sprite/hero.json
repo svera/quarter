@@ -10,7 +10,7 @@
             "y_offset": 62,
             "width": 19,
             "height": 22,
-            "boxes": [
+            "bounding_shapes": [
                 {
                     "min": {
                         "x": -4.5,
@@ -151,7 +151,7 @@
             "y_offset": 40,
             "width": 19,
             "height": 22,
-            "boxes": [
+            "bounding_shapes": [
                 {
                     "min": {
                         "x": -4.5,
@@ -242,7 +242,7 @@
             "y_offset": 18,
             "width": 19,
             "height": 22,
-            "boxes": [
+            "bounding_shapes": [
                 {
                     "min": {
                         "x": -4.5,
@@ -283,7 +283,7 @@
             "y_offset": 18,
             "width": 19,
             "height": 22,
-            "boxes": [
+            "bounding_shapes": [
                 {
                     "min": {
                         "x": -4.5,
