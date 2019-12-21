@@ -74,12 +74,11 @@ func NewGame(width, height float64) *Game {
 	}
 
 	// Canvas origin of coordinates will be at its center
-	imd := imdraw.New(nil)
 	g.red = &color.RGBA{255, 0, 0, 16}
 	g.green = &color.RGBA{0, 255, 0, 16}
 	g.blue = &color.RGBA{0, 0, 255, 16}
 
-	g.levels[0].SetDebug(imd, g.blue)
+	g.levels[0].SetDebug(g.imd, g.blue)
 	return &g
 }
 
