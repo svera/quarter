@@ -89,11 +89,12 @@ func (g *Game) Loop(win *pixelgl.Window, dt float64) string {
 	delta := g.phys.Displacement(dt)
 	sol := g.hero.BoundingShape().Resolve(delta, g.levels[0].Layers[0].Bounds...)
 
-	if !g.hero.InBoundsX(delta, g.levels[0].Limits) {
-		delta.X = 0
-		g.phys.StopMovingX()
-	}
-
+	/*
+		if !g.hero.InBoundsX(delta, g.levels[0].Limits) {
+			delta.X = 0
+			g.phys.StopMovingX()
+		}
+	*/
 	g.updatePosition(sol, delta)
 	g.updateAnim(sol)
 
