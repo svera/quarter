@@ -24,13 +24,13 @@ type BoundedAnimFile struct {
 // both to make "solid" animated sprites
 type Character struct {
 	AnimSprite
-	BoundingShapes map[int][]collision.BoundingBox
+	BoundingShapes map[int][]collision.Shape
 }
 
 // LoadCharacter loads a character data from reader
 func LoadCharacter(r io.Reader, pos pixel.Vec) (*Character, error) {
 	chtr := &Character{
-		BoundingShapes: make(map[int][]collision.BoundingBox),
+		BoundingShapes: make(map[int][]collision.Shape),
 	}
 	data := &BoundedAnimFile{}
 	err := json.NewDecoder(r).Decode(data)
@@ -48,19 +48,20 @@ func LoadCharacter(r io.Reader, pos pixel.Vec) (*Character, error) {
 	for i, an := range data.Anims {
 		chtr.AddAnim(i, pic, an.YOffset, an.Width, an.Height, an.Frames, an.Duration, an.Cycle)
 		for _, bb := range an.BoundingShapes {
-			chtr.BoundingShapes[i] = append(chtr.BoundingShapes[i], bb)
+			chtr.BoundingShapes[i] = append(chtr.BoundingShapes[i], &bb)
 		}
 	}
 	return chtr, nil
 }
 
 // BoundingShape returns the character bounding box information updated to its current position
-func (c *Character) BoundingShape() *collision.BoundingBox {
+func (c *Character) BoundingShape() collision.Shape {
 	bb := c.BoundingShapes[c.currentAnimID][c.currentFrameNumber]
-	bb.Rect = bb.Moved(c.Position)
-	return &bb
+	bb.Recenter(c.Position)
+	return bb
 }
 
+/*
 func (c *Character) InBoundsX(delta pixel.Vec, limits pixel.Rect) bool {
 	return c.BoundingShape().Min.X+delta.X > limits.Min.X &&
 		c.BoundingShape().Max.X+delta.X < limits.Max.X
@@ -70,3 +71,4 @@ func (c *Character) InBoundsY(delta pixel.Vec, limits pixel.Rect) bool {
 	return c.BoundingShape().Min.Y+delta.Y > limits.Min.Y &&
 		c.BoundingShape().Max.Y+delta.Y < limits.Max.Y
 }
+*/

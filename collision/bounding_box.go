@@ -50,6 +50,10 @@ func (bb *BoundingBox) Shape() Shape {
 	return bb
 }
 
+func (bb *BoundingBox) Recenter(pos pixel.Vec) {
+	bb.Rect = bb.Moved(pos.Sub(bb.Center()))
+}
+
 // Resolve checks if the bounding box will collide with another bounding box if it moves
 // a certain delta
 func (bb *BoundingBox) Resolve(delta pixel.Vec, others ...Shaper) Solution {

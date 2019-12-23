@@ -35,6 +35,11 @@ func (bc *BoundingCircle) Shape() Shape {
 	return bc
 }
 
+// TODO
+func (bb *BoundingCircle) Recenter(pos pixel.Vec) {
+	return
+}
+
 func (bc *BoundingCircle) Resolve(delta pixel.Vec, others ...Shaper) Solution {
 	sol := Solution{}
 
