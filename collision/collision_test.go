@@ -8,24 +8,6 @@ import (
 	"github.com/svera/quarter/collision"
 )
 
-func TestCollidesWithBoundingBox(t *testing.T) {
-	rect1 := &collision.BoundingBox{pixel.Rect{Min: pixel.V(5, 5), Max: pixel.V(55, 55)}}
-	rect2 := &collision.BoundingBox{pixel.Rect{Min: pixel.V(20, 10), Max: pixel.V(30, 20)}}
-
-	t.Run("Collision is detected", func(t *testing.T) {
-		if !rect1.Collides(rect2) {
-			t.Errorf("Rect1 collides with Rect2 but no collision is detected")
-		}
-	})
-
-	t.Run("No collision is detected", func(t *testing.T) {
-		rect1.Max.X = 15
-		if rect1.Collides(rect2) {
-			t.Errorf("Rect1 does not collide with Rect2 but a collision is detected")
-		}
-	})
-}
-
 func TestResolveBoxAgainstBox(t *testing.T) {
 	/*
 		+-----+

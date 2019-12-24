@@ -30,7 +30,6 @@ type Shaper interface {
 // Shape is an interface that defines the minimum contract required for shapes that
 // can be checked for collisions
 type Shape interface {
-	Collides(Shaper) bool
 	Resolve(pixel.Vec, ...Shaper) Solution
 	Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target)
 	Recenter(pos pixel.Vec)

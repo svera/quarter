@@ -14,7 +14,7 @@ import (
 // Returned errors
 const (
 	ErrorWrongFileFormat       = "Loaded levels file is not a valid JSON"
-	ErrorVersionNotSupported   = "Version not supported"
+	ErrorVersionNotSupported   = "Version \"%s\" not supported"
 	ErrorNoLevels              = "Levels file must have at least one level declared, none found"
 	ErrorBoundTypeNotSupported = "Bound type \"%s\" is not supported"
 	ErrorWrongBoundValues      = "Wrong or missing bound values"
@@ -82,7 +82,7 @@ func Load(r io.Reader) ([]Level, error) {
 	}
 
 	if data.Version != "1" {
-		return nil, fmt.Errorf(ErrorVersionNotSupported)
+		return nil, fmt.Errorf(ErrorVersionNotSupported, data.Version)
 	}
 
 	if len(data.Levels) == 0 {

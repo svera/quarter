@@ -10,14 +10,28 @@ import (
 	"github.com/svera/quarter/collision"
 )
 
+// Returned errors
+const (
+	ErrorVersionNotSupported   = "Version \"%s\" not supported"
+	ErrorNoAnims               = "File must have at least one animation declared, none found"
+	ErrorShapeTypeNotSupported = "Shape type \"%s\" is not supported"
+	ErrorShapeDataNotValid     = "Shape data of shape type \"%s\" is not valid"
+)
+
 // BoundedAnimFile is the struct of the JSON file used to store an animated sprite with attached bounding boxes
 type BoundedAnimFile struct {
 	Version string
 	Sheet   string
 	Anims   []struct {
 		AnimData
-		BoundingShapes []collision.BoundingBox `json:"bounding_shapes"`
+		BoundingShapes []BoundingShape `json:"bounding_shapes"`
 	}
+}
+
+// BoundingShape is a generic struct which can contain information about different shapes
+type BoundingShape struct {
+	Type       string
+	Parameters json.RawMessage
 }
 
 // Character is a wrapper around both AnimSprite and BoundingBox that associates
@@ -34,21 +48,39 @@ func LoadCharacter(r io.Reader, pos pixel.Vec) (*Character, error) {
 	}
 	data := &BoundedAnimFile{}
 	err := json.NewDecoder(r).Decode(data)
+
 	if err != nil {
 		return chtr, err
 	}
+
 	if data.Version != "1" {
-		return chtr, fmt.Errorf("Version not supported")
+		return chtr, fmt.Errorf(ErrorVersionNotSupported, data.Version)
 	}
+
 	pic, err := quarter.LoadPicture(data.Sheet)
 	if err != nil {
 		return chtr, err
 	}
+
+	if len(data.Anims) == 0 {
+		return nil, fmt.Errorf(ErrorNoAnims)
+	}
+
 	chtr.AnimSprite = *NewAnimSprite(pos, len(data.Anims))
 	for i, an := range data.Anims {
 		chtr.AddAnim(i, pic, an.YOffset, an.Width, an.Height, an.Frames, an.Duration, an.Cycle)
-		for _, bb := range an.BoundingShapes {
-			chtr.BoundingShapes[i] = append(chtr.BoundingShapes[i], &bb)
+		for _, shape := range an.BoundingShapes {
+			switch shape.Type {
+			case "box":
+				bb := collision.BoundingBox{}
+				err := json.Unmarshal(shape.Parameters, &bb)
+				if err != nil {
+					return nil, fmt.Errorf(ErrorShapeDataNotValid, shape.Type)
+				}
+				chtr.BoundingShapes[i] = append(chtr.BoundingShapes[i], &bb)
+			default:
+				return nil, fmt.Errorf(ErrorShapeTypeNotSupported, shape.Type)
+			}
 		}
 	}
 	return chtr, nil

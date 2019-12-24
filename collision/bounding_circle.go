@@ -21,16 +21,6 @@ func NewBoundingCircle(x, y, r float64) *BoundingCircle {
 	}
 }
 
-func (bc *BoundingCircle) Collides(other Shaper) bool {
-	switch t := other.Shape().(type) {
-	case *BoundingBox:
-		return bc.IntersectRect(t.Rect) != pixel.ZV
-	case *BoundingCircle:
-		return bc.Intersect(t.Circle).Radius != 0
-	}
-	return false
-}
-
 func (bc *BoundingCircle) Shape() Shape {
 	return bc
 }
@@ -40,25 +30,10 @@ func (bb *BoundingCircle) Recenter(pos pixel.Vec) {
 	return
 }
 
+// TODO
 func (bc *BoundingCircle) Resolve(delta pixel.Vec, others ...Shaper) Solution {
 	sol := Solution{}
 
-	bcMoved := &BoundingCircle{
-		bc.Moved(delta),
-	}
-
-	for _, other := range others {
-		if !bcMoved.Collides(other) {
-			continue
-		}
-
-		switch t := other.Shape().(type) {
-		case *BoundingBox:
-			distanceBetweenCenters := bcMoved.Center.To(t.Center())
-			sol = bc.resolveAgainstBoundingBox(t, distanceBetweenCenters)
-			return sol
-		}
-	}
 	return sol
 }
 

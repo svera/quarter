@@ -34,17 +34,6 @@ func NewCenteredBoundingBox(x, y, w, h float64) *BoundingBox {
 	}
 }
 
-// Collides returns true if the bounding box collides with the passed shape
-func (bb *BoundingBox) Collides(other Shaper) bool {
-	switch t := other.Shape().(type) {
-	case *BoundingBox:
-		return bb.Intersects(t.Rect)
-	case *BoundingCircle:
-		return bb.IntersectCircle(t.Circle) != pixel.ZV
-	}
-	return false
-}
-
 // Shape returns the BoundingBox instance
 func (bb *BoundingBox) Shape() Shape {
 	return bb
