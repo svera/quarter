@@ -32,11 +32,11 @@ func NewAttract() *Attract {
 	return &a
 }
 
-func (a *Attract) Loop(w *pixelgl.Window, dt float64) string {
+func (a *Attract) Loop(w *pixelgl.Window, dt float64) (string, error) {
 	w.Clear(color.Black)
 	a.txtFx.Draw(a.txt, w, pixel.IM, dt)
 	if w.JustPressed(pixelgl.KeySpace) {
-		return "game"
+		return "game", nil
 	}
-	return "attract"
+	return "attract", nil
 }

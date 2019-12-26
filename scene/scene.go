@@ -6,5 +6,5 @@ import "github.com/faiface/pixel/pixelgl"
 // Each scene is a distinct state of the game that displays different information
 type Scene interface {
 	// Loop executes scene logic and returns name of next scene to be run
-	Loop(w *pixelgl.Window, dt float64) string
+	Loop(w *pixelgl.Window, dt float64) (string, error)
 }

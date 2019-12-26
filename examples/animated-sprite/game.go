@@ -82,7 +82,7 @@ func NewGame(width, height float64) *Game {
 	return &g
 }
 
-func (g *Game) Loop(win *pixelgl.Window, dt float64) string {
+func (g *Game) Loop(win *pixelgl.Window, dt float64) (string, error) {
 	g.imd.Clear()
 
 	g.readInput(win, dt)
@@ -105,7 +105,7 @@ func (g *Game) Loop(win *pixelgl.Window, dt float64) string {
 	g.circle.Draw(g.green, g.imd, g.canvas)
 	g.imd.Draw(g.canvas)
 	g.canvas.Draw(win, pixel.IM.Moved(win.Bounds().Center()).Scaled(win.Bounds().Center(), zoom))
-	return "game"
+	return "game", nil
 }
 
 func (g *Game) readInput(win *pixelgl.Window, dt float64) {

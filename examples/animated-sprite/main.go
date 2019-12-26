@@ -44,7 +44,9 @@ func run() {
 		dt := time.Since(last).Seconds()
 		last = time.Now()
 
-		currentScene = scenes[currentScene].Loop(win, dt)
+		if currentScene, err = scenes[currentScene].Loop(win, dt); err != nil {
+			panic(err)
+		}
 		win.Update()
 
 		frames++
