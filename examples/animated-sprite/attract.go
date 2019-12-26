@@ -34,7 +34,7 @@ func NewAttract() *Attract {
 
 func (a *Attract) Loop(w *pixelgl.Window, dt float64) string {
 	w.Clear(color.Black)
-	a.txtFx.Blinking(a.txt, w, pixel.IM, dt)
+	a.txtFx.Draw(a.txt, w, pixel.IM, dt)
 	if w.JustPressed(pixelgl.KeySpace) {
 		return "game"
 	}

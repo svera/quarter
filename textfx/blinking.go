@@ -20,8 +20,8 @@ func NewBlinking(freq float64) *Blinking {
 	}
 }
 
-// Blinking draws passed text on screen, showing it on and off according to the specified frequency
-func (t *Blinking) Blinking(txt *text.Text, tgt pixel.Target, matrix pixel.Matrix, dt float64) {
+// Draw draws passed text on screen, showing it on and off according to the specified frequency
+func (t *Blinking) Draw(txt *text.Text, tgt pixel.Target, matrix pixel.Matrix, dt float64) {
 	t.elapsed += dt
 	if t.elapsed > t.Frequency {
 		t.show = !t.show
