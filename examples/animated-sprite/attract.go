@@ -13,7 +13,7 @@ import (
 
 type Attract struct {
 	txt   *text.Text
-	txtFx *textfx.TextFX
+	txtFx *textfx.Blinking
 }
 
 func NewAttract() *Attract {
@@ -25,7 +25,7 @@ func NewAttract() *Attract {
 	atlas := text.NewAtlas(face, text.ASCII)
 	a := Attract{
 		txt:   text.New(pixel.V(100, 500), atlas),
-		txtFx: textfx.NewTextFX(0.5),
+		txtFx: textfx.NewBlinking(0.5),
 	}
 	a.txt.Color = color.White
 	fmt.Fprintln(a.txt, "Arcade")
@@ -34,7 +34,7 @@ func NewAttract() *Attract {
 
 func (a *Attract) Loop(w *pixelgl.Window, dt float64) string {
 	w.Clear(color.Black)
-	a.txtFx.DrawBlinking(a.txt, w, pixel.IM, dt)
+	a.txtFx.Blinking(a.txt, w, pixel.IM, dt)
 	if w.JustPressed(pixelgl.KeySpace) {
 		return "game"
 	}

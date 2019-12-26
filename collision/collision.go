@@ -32,5 +32,5 @@ type Shaper interface {
 type Shape interface {
 	Resolve(pixel.Vec, ...Shaper) Solution
 	Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target)
-	Recenter(pos pixel.Vec)
+	Align(pos pixel.Vec)
 }

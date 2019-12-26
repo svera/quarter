@@ -23,23 +23,12 @@ func NewBoundingBox(min pixel.Vec, max pixel.Vec) *BoundingBox {
 	}
 }
 
-// NewCenteredBoundingBox returns a new BoundingBox instance. As Pixel's sprites,
-// bounding box coordinates origin is located in its center.
-func NewCenteredBoundingBox(x, y, w, h float64) *BoundingBox {
-	return &BoundingBox{
-		pixel.Rect{
-			Min: pixel.V(x-(w/2), y-(h/2)),
-			Max: pixel.V(x+(w/2), y+(h/2)),
-		},
-	}
-}
-
 // Shape returns the BoundingBox instance
 func (bb *BoundingBox) Shape() Shape {
 	return bb
 }
 
-func (bb *BoundingBox) Recenter(pos pixel.Vec) {
+func (bb *BoundingBox) Align(pos pixel.Vec) {
 	bb.Rect = bb.Moved(pos.Sub(bb.Center()))
 }
 

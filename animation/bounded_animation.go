@@ -34,41 +34,41 @@ type BoundingShape struct {
 	Parameters json.RawMessage
 }
 
-// Character is a wrapper around both AnimSprite and BoundingBox that associates
+// BoundedAnimation is a wrapper around both AnimSprite and BoundingBox that associates
 // both to make "solid" animated sprites
-type Character struct {
-	AnimSprite
+type BoundedAnimation struct {
+	Animation
 	BoundingShapes map[int][]collision.Shape
 }
 
-// LoadCharacter loads a character data from reader
-func LoadCharacter(r io.Reader, pos pixel.Vec) (*Character, error) {
-	chtr := &Character{
+// LoadBoundedAnimation loads a character data from reader
+func LoadBoundedAnimation(r io.Reader, pos pixel.Vec) (*BoundedAnimation, error) {
+	bAnim := &BoundedAnimation{
 		BoundingShapes: make(map[int][]collision.Shape),
 	}
 	data := &BoundedAnimFile{}
 	err := json.NewDecoder(r).Decode(data)
 
 	if err != nil {
-		return chtr, err
+		return bAnim, err
 	}
 
 	if data.Version != "1" {
-		return chtr, fmt.Errorf(ErrorVersionNotSupported, data.Version)
+		return bAnim, fmt.Errorf(ErrorVersionNotSupported, data.Version)
 	}
 
 	pic, err := quarter.LoadPicture(data.Sheet)
 	if err != nil {
-		return chtr, err
+		return bAnim, err
 	}
 
 	if len(data.Anims) == 0 {
 		return nil, fmt.Errorf(ErrorNoAnims)
 	}
 
-	chtr.AnimSprite = *NewAnimSprite(pos, len(data.Anims))
+	bAnim.Animation = *NewAnimation(pos, len(data.Anims))
 	for i, an := range data.Anims {
-		chtr.AddAnim(i, pic, an.YOffset, an.Width, an.Height, an.Frames, an.Duration, an.Cycle)
+		bAnim.AddAnim(i, pic, an.YOffset, an.Width, an.Height, an.Frames, an.Duration, an.Cycle)
 		for _, shape := range an.BoundingShapes {
 			switch shape.Type {
 			case "box":
@@ -77,19 +77,19 @@ func LoadCharacter(r io.Reader, pos pixel.Vec) (*Character, error) {
 				if err != nil {
 					return nil, fmt.Errorf(ErrorShapeDataNotValid, shape.Type)
 				}
-				chtr.BoundingShapes[i] = append(chtr.BoundingShapes[i], &bb)
+				bAnim.BoundingShapes[i] = append(bAnim.BoundingShapes[i], &bb)
 			default:
 				return nil, fmt.Errorf(ErrorShapeTypeNotSupported, shape.Type)
 			}
 		}
 	}
-	return chtr, nil
+	return bAnim, nil
 }
 
 // BoundingShape returns the character bounding box information updated to its current position
-func (c *Character) BoundingShape() collision.Shape {
+func (c *BoundedAnimation) BoundingShape() collision.Shape {
 	bb := c.BoundingShapes[c.currentAnimID][c.currentFrameNumber]
-	bb.Recenter(c.Position)
+	bb.Align(c.Position)
 	return bb
 }
 

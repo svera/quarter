@@ -33,15 +33,15 @@ const (
 // To convert string values used in sprite definition file to integer values
 var animationCycle = map[string]int{"single_reverse": -2, "circular_reverse": -1, "circular": 0, "single": 1}
 
-type animation struct {
+type sequence struct {
 	frames       []*pixel.Sprite
 	timePerFrame float64
 	cycle        int
 }
 
-// AnimSprite implements an animated sprite
-type AnimSprite struct {
-	anims              []*animation
+// Animation implements an animated sprite
+type Animation struct {
+	anims              []*sequence
 	currentAnimID      int
 	currentFrameNumber int
 	elapsed            float64
@@ -49,20 +49,20 @@ type AnimSprite struct {
 	Dir                float64
 }
 
-// NewAnimSprite returns a new AnimSprite instance to be drawn at position x, y
-func NewAnimSprite(pos pixel.Vec, numberAnims int) *AnimSprite {
-	return &AnimSprite{
-		anims:    make([]*animation, numberAnims),
+// NewAnimation returns a new Sprite instance to be drawn at position x, y
+func NewAnimation(pos pixel.Vec, numberAnims int) *Animation {
+	return &Animation{
+		anims:    make([]*sequence, numberAnims),
 		Position: pos,
 		Dir:      1,
 	}
 }
 
-// AddAnim adds a new animation to the AnimSprite, identified with ID,
+// AddAnim adds a new animation to the Sprite, identified with ID,
 // whose frames are taken from pic from left to right, starting from X = 0
 // duration defines how many seconds should it take for the animation to complete a cycle
-func (a *AnimSprite) AddAnim(idx int, pic pixel.Picture, yOffset, width, height, numberFrames, duration float64, cycle string) {
-	a.anims[idx] = &animation{
+func (a *Animation) AddAnim(idx int, pic pixel.Picture, yOffset, width, height, numberFrames, duration float64, cycle string) {
+	a.anims[idx] = &sequence{
 		timePerFrame: duration / numberFrames,
 	}
 	a.anims[idx].cycle = animationCycle[cycle]
@@ -74,7 +74,7 @@ func (a *AnimSprite) AddAnim(idx int, pic pixel.Picture, yOffset, width, height,
 }
 
 // SetCurrentAnim defines which animation to play
-func (a *AnimSprite) SetCurrentAnim(ID int) error {
+func (a *Animation) SetCurrentAnim(ID int) error {
 	if ID < 0 || ID > len(a.anims)-1 {
 		return fmt.Errorf("Animation does not exist")
 	}
@@ -89,12 +89,12 @@ func (a *AnimSprite) SetCurrentAnim(ID int) error {
 	return nil
 }
 
-func (a *AnimSprite) GetCurrentAnim() int {
+func (a *Animation) GetCurrentAnim() int {
 	return a.currentAnimID
 }
 
-// Draw draws AnimSprite current frame on target, and updates the former if needed
-func (a *AnimSprite) Draw(target pixel.Target, dt float64) {
+// Draw draws Sprite current frame on target, and updates the former if needed
+func (a *Animation) Draw(target pixel.Target, dt float64) {
 	m := pixel.IM.ScaledXY(pixel.ZV, pixel.V(a.Dir, 1)).Moved(a.Position)
 	a.anims[a.currentAnimID].frames[a.currentFrameNumber].Draw(target, m)
 	a.elapsed += dt
@@ -104,7 +104,7 @@ func (a *AnimSprite) Draw(target pixel.Target, dt float64) {
 	}
 }
 
-func (a *AnimSprite) nextFrameIndex(dt float64) int {
+func (a *Animation) nextFrameIndex(dt float64) int {
 	if a.elapsed <= a.anims[a.currentAnimID].timePerFrame {
 		return a.currentFrameNumber
 	}
@@ -131,10 +131,10 @@ func (a *AnimSprite) nextFrameIndex(dt float64) int {
 	return a.currentFrameNumber
 }
 
-func (a *AnimSprite) lastFrame() int {
+func (a *Animation) lastFrame() int {
 	return len(a.anims[a.currentAnimID].frames) - 1
 }
 
-func (a *AnimSprite) isLastFrame(number int) bool {
+func (a *Animation) isLastFrame(number int) bool {
 	return len(a.anims[a.currentAnimID].frames)-1 == number
 }

@@ -26,7 +26,7 @@ func (bc *BoundingCircle) Shape() Shape {
 }
 
 // TODO
-func (bb *BoundingCircle) Recenter(pos pixel.Vec) {
+func (bb *BoundingCircle) Align(pos pixel.Vec) {
 	return
 }
 

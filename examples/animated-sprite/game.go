@@ -30,7 +30,7 @@ const (
 
 type Game struct {
 	phys   *physic.Physics
-	hero   *animation.Character
+	hero   *animation.BoundedAnimation
 	circle *collision.BoundingCircle
 	canvas *pixelgl.Canvas
 	imd    *imdraw.IMDraw
@@ -46,7 +46,7 @@ func NewGame(width, height float64) *Game {
 		panic(err)
 	}
 
-	hero, err := animation.LoadCharacter(r, pixel.V(64, 32))
+	hero, err := animation.LoadBoundedAnimation(r, pixel.V(64, 32))
 	if err != nil {
 		panic(err)
 	}
