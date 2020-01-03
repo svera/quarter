@@ -6,6 +6,7 @@ import (
 	"github.com/faiface/pixel"
 )
 
+// AnimFile defines the structure of a disk file containing information about animations
 type AnimFile struct {
 	Version string
 	Sheet   string
@@ -15,7 +16,7 @@ type AnimFile struct {
 }
 
 type AnimData struct {
-	Frames   float64
+	Frames   int
 	Cycle    string
 	Duration float64
 	YOffset  float64 `json:"y_offset"`
@@ -23,6 +24,7 @@ type AnimData struct {
 	Height   float64
 }
 
+// Animation types of cycles
 const (
 	SingleReverse = iota - 2
 	CircularReverse
@@ -30,7 +32,12 @@ const (
 	Single
 )
 
-// To convert string values used in sprite definition file to integer values
+// Returned errors
+const (
+	ErrorAnimationDoesNotExist = "Animation %d does not exist"
+)
+
+// To convert string values used in sprite definition file to integer values used internally
 var animationCycle = map[string]int{"single_reverse": -2, "circular_reverse": -1, "circular": 0, "single": 1}
 
 type sequence struct {
@@ -61,14 +68,14 @@ func NewAnimation(pos pixel.Vec, numberAnims int) *Animation {
 // AddAnim adds a new animation to the Sprite, identified with ID,
 // whose frames are taken from pic from left to right, starting from X = 0
 // duration defines how many seconds should it take for the animation to complete a cycle
-func (a *Animation) AddAnim(idx int, pic pixel.Picture, yOffset, width, height, numberFrames, duration float64, cycle string) {
+func (a *Animation) AddAnim(idx int, pic pixel.Picture, yOffset, width, height float64, numberFrames int, duration float64, cycle string) {
 	a.anims[idx] = &sequence{
-		timePerFrame: duration / numberFrames,
+		timePerFrame: duration / float64(numberFrames),
 	}
 	a.anims[idx].cycle = animationCycle[cycle]
 	var x float64
-	for i := 0.0; i < numberFrames; i++ {
-		x = width * i
+	for i := 0; i < numberFrames; i++ {
+		x = width * float64(i)
 		a.anims[idx].frames = append(a.anims[idx].frames, pixel.NewSprite(pic, pixel.R(x, yOffset, x+width, yOffset+height)))
 	}
 }
@@ -76,7 +83,7 @@ func (a *Animation) AddAnim(idx int, pic pixel.Picture, yOffset, width, height, 
 // SetCurrentAnim defines which animation to play
 func (a *Animation) SetCurrentAnim(ID int) error {
 	if ID < 0 || ID > len(a.anims)-1 {
-		return fmt.Errorf("Animation does not exist")
+		return fmt.Errorf(ErrorAnimationDoesNotExist, ID)
 	}
 	if ID != a.currentAnimID {
 		a.currentAnimID = ID
@@ -89,7 +96,8 @@ func (a *Animation) SetCurrentAnim(ID int) error {
 	return nil
 }
 
-func (a *Animation) GetCurrentAnim() int {
+// CurrentAnim returns the current animation index
+func (a *Animation) CurrentAnim() int {
 	return a.currentAnimID
 }
 

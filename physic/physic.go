@@ -10,12 +10,17 @@ import (
 const (
 	DirectionLeft  = -1
 	DirectionRight = 1
+	DirectionUp    = 1
+	DirectionDown  = -1
 )
 
+// Params is a set of values used to calculate velocuty and displacement in both axis
 type Params struct {
-	MaxVelocityX float64
-	Acceleration float64
-	Gravity      float64
+	MaxVelocityX  float64
+	MaxVelocityY  float64
+	AccelerationX float64
+	AccelerationY float64
+	Gravity       float64
 }
 
 // Physics controls movement of an element
@@ -38,20 +43,27 @@ func NewPhysics(params Params) *Physics {
 	}
 }
 
-// Accelerate increases the speed of the item
-func (p *Physics) Accelerate(dir float64, dt float64) {
-	p.velocityX += dir * p.Acceleration * dt
+// AccelerateX increases the speed of the item
+func (p *Physics) AccelerateX(dir float64, dt float64) {
+	p.velocityX += dir * p.AccelerationX * dt
 	if math.Abs(p.velocityX) > math.Abs(p.MaxVelocityX) {
 		p.velocityX = p.MaxVelocityX * dir
 	}
-	//fmt.Printf("velocity: %f\n", p.velocityX)
 }
 
-// Decelerate slow down velocity of the item
-func (p *Physics) Decelerate(dt float64) {
+// AccelerateY increases the speed of the item
+func (p *Physics) AccelerateY(dir float64, dt float64) {
+	p.velocityY += dir * p.AccelerationY * dt
+	if math.Abs(p.velocityY) > math.Abs(p.MaxVelocityY) {
+		p.velocityY = p.MaxVelocityY * dir
+	}
+}
+
+// DecelerateX slow down velocity of the item in the X axis
+func (p *Physics) DecelerateX(dt float64) {
 	// We pick the minimum between velocity and acceleration
 	// to avoid decelerating too much and never stopping completely the object
-	val := math.Min(math.Abs(p.velocityX), p.Acceleration*dt)
+	val := math.Min(math.Abs(p.velocityX), p.AccelerationX*dt)
 	if p.velocityX > 0 {
 		p.velocityX -= val
 	}
@@ -61,9 +73,36 @@ func (p *Physics) Decelerate(dt float64) {
 	}
 }
 
-// Jump increases the vertical speed of the item
-func (p *Physics) Jump(impulse float64) {
-	p.velocityY = impulse
+// DecelerateY slow down velocity of the item in the Y axis
+func (p *Physics) DecelerateY(dt float64) {
+	// We pick the minimum between velocity and acceleration
+	// to avoid decelerating too much and never stopping completely the object
+	val := math.Min(math.Abs(p.velocityY), p.AccelerationY*dt)
+	if p.velocityY > 0 {
+		p.velocityY -= val
+	}
+
+	if p.velocityY < 0 {
+		p.velocityY += val
+	}
+}
+
+// SetVelocityX sets the horizontal speed of the item
+func (p *Physics) SetVelocityX(value float64) {
+	if math.Abs(value) < math.Abs(p.MaxVelocityX) {
+		p.velocityX = value
+	} else {
+		p.velocityX = p.MaxVelocityX
+	}
+}
+
+// SetVelocityY sets the vertical speed of the item
+func (p *Physics) SetVelocityY(value float64) {
+	if math.Abs(value) < math.Abs(p.MaxVelocityY) {
+		p.velocityY = value
+	} else {
+		p.velocityY = p.MaxVelocityY
+	}
 }
 
 // Displacement returns the movement an item must do both in X and Y axis
@@ -73,28 +112,12 @@ func (p *Physics) Displacement(dt float64) pixel.Vec {
 	return pixel.V(p.velocityX*dt, p.velocityY*dt)
 }
 
-// IsStopped returns true is the item is not moving
-func (p *Physics) IsStopped() bool {
-	return p.velocityX == 0
+// VelocityX returns object speed in X axis
+func (p *Physics) VelocityX() float64 {
+	return p.velocityX
 }
 
-func (p *Physics) IsMovingUp() bool {
-	return p.velocityY > 0
-}
-
-func (p *Physics) StopMovingY() {
-	p.velocityY = 0
-}
-
-func (p *Physics) StopMovingX() {
-	p.velocityX = 0
-}
-
-// IsMovingDown returns true if the item has a negative velocity
-func (p *Physics) IsMovingDown() bool {
-	return p.velocityY < 0
-}
-
+// VelocityY returns object speed in Y axis
 func (p *Physics) VelocityY() float64 {
 	return p.velocityY
 }

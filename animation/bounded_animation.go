@@ -16,6 +16,7 @@ const (
 	ErrorNoAnims               = "File must have at least one animation declared, none found"
 	ErrorShapeTypeNotSupported = "Shape type \"%s\" is not supported"
 	ErrorShapeDataNotValid     = "Shape data of shape type \"%s\" is not valid"
+	ErrorBoundsNotEqualFrames  = "Animation %d has %d frames but %d bounding shapes"
 )
 
 // BoundedAnimFile is the struct of the JSON file used to store an animated sprite with attached bounding boxes
@@ -68,6 +69,9 @@ func LoadBoundedAnimation(r io.Reader, pos pixel.Vec) (*BoundedAnimation, error)
 
 	bAnim.Animation = *NewAnimation(pos, len(data.Anims))
 	for i, an := range data.Anims {
+		if an.Frames != len(data.Anims[i].BoundingShapes) {
+			return nil, fmt.Errorf(ErrorBoundsNotEqualFrames, i, an.Frames, len(data.Anims[i].BoundingShapes))
+		}
 		bAnim.AddAnim(i, pic, an.YOffset, an.Width, an.Height, an.Frames, an.Duration, an.Cycle)
 		for _, shape := range an.BoundingShapes {
 			switch shape.Type {

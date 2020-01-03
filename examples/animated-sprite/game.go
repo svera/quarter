@@ -60,9 +60,10 @@ func NewGame(width, height float64) *Game {
 	g := Game{
 		phys: physic.NewPhysics(
 			physic.Params{
-				MaxVelocityX: 50,
-				Acceleration: 75,
-				Gravity:      112,
+				MaxVelocityX:  50,
+				MaxVelocityY:  100,
+				AccelerationX: 75,
+				Gravity:       112,
 			},
 		),
 		hero:   hero,
@@ -109,31 +110,29 @@ func (g *Game) Loop(win *pixelgl.Window, dt float64) (string, error) {
 }
 
 func (g *Game) readInput(win *pixelgl.Window, dt float64) {
-	if win.JustPressed(pixelgl.KeyUp) && g.hero.GetCurrentAnim() != jumping && g.hero.GetCurrentAnim() != falling {
-		g.phys.Jump(impulse)
+	if win.JustPressed(pixelgl.KeyUp) && g.hero.CurrentAnim() != jumping && g.hero.CurrentAnim() != falling {
+		g.phys.SetVelocityY(impulse)
 	} else if win.Pressed(pixelgl.KeyLeft) {
 		g.hero.Dir = physic.DirectionLeft
-		g.phys.Accelerate(g.hero.Dir, dt)
+		g.phys.AccelerateX(g.hero.Dir, dt)
 	} else if win.Pressed(pixelgl.KeyRight) {
 		g.hero.Dir = physic.DirectionRight
-		g.phys.Accelerate(g.hero.Dir, dt)
-	} else if !win.Pressed(pixelgl.KeyLeft) && !win.Pressed(pixelgl.KeyRight) && !g.phys.IsStopped() {
-		g.phys.Decelerate(dt)
+		g.phys.AccelerateX(g.hero.Dir, dt)
+	} else if !win.Pressed(pixelgl.KeyLeft) && !win.Pressed(pixelgl.KeyRight) && g.phys.VelocityX() != 0 {
+		g.phys.DecelerateX(dt)
 	}
 }
 
 func (g *Game) updatePosition(sol collision.Solution, delta pixel.Vec) {
 	if sol.CollisionAxis == collision.AxisX {
-		g.phys.StopMovingX()
+		g.phys.SetVelocityX(0)
 		g.hero.Position = g.hero.Position.Add(pixel.V(sol.Distance.X, delta.Y))
 	} else if sol.CollisionAxis == collision.AxisY {
-		g.phys.StopMovingY()
+		g.phys.SetVelocityY(0)
 		g.hero.Position = g.hero.Position.Add(pixel.V(delta.X, sol.Distance.Y))
 	} else if sol.CollisionAxis == collision.AxisBoth {
-		if g.phys.IsMovingUp() {
-			g.phys.StopMovingY()
-		}
-		g.phys.StopMovingX()
+		g.phys.SetVelocityY(0)
+		g.phys.SetVelocityX(0)
 		g.hero.Position = g.hero.Position.Add(sol.Distance)
 	} else {
 		g.hero.Position = g.hero.Position.Add(delta)
@@ -141,11 +140,11 @@ func (g *Game) updatePosition(sol collision.Solution, delta pixel.Vec) {
 }
 
 func (g *Game) updateAnim(sol collision.Solution) {
-	if g.phys.IsMovingUp() {
+	if g.phys.VelocityY() > 0 {
 		g.hero.SetCurrentAnim(jumping)
-	} else if g.phys.IsMovingDown() && sol.CollisionAxis != collision.AxisY {
+	} else if g.phys.VelocityY() < 0 && sol.CollisionAxis != collision.AxisY {
 		g.hero.SetCurrentAnim(falling)
-	} else if !g.phys.IsStopped() {
+	} else if g.phys.VelocityX() != 0 {
 		g.hero.SetCurrentAnim(running)
 	} else {
 		g.hero.SetCurrentAnim(idle)
