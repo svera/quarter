@@ -8,49 +8,53 @@ import (
 	"github.com/svera/quarter/physic"
 )
 
-func TestAccelerateX(t *testing.T) {
+func TestAccelerate(t *testing.T) {
 	var testValues = []struct {
-		testName          string
-		dir               float64
-		dt                float64
-		expectedVelocityX float64
+		testName         string
+		axis             int
+		dir              float64
+		dt               float64
+		expectedVelocity float64
 	}{
-		{"Accelerate to the right", physic.DirectionRight, 0.5, 5},
-		{"Accelerate to the left", physic.DirectionLeft, 0.5, -5},
+		{"Accelerate to the right", physic.AxisX, physic.DirectionRight, 0.5, 5},
+		{"Accelerate to the left", physic.AxisX, physic.DirectionLeft, 0.5, -5},
 	}
 	for _, tt := range testValues {
 		t.Run(tt.testName, func(t *testing.T) {
-			phys := physic.NewPhysics(physic.Params{
-				MaxVelocityX:  10,
-				AccelerationX: 10,
-			})
-			phys.AccelerateX(tt.dir, tt.dt)
-			if phys.VelocityX() != tt.expectedVelocityX {
-				t.Errorf("got %f, want %f", phys.VelocityX(), tt.expectedVelocityX)
+			phys := physic.NewPhysics(
+				physic.Params{
+					MaxVelocity:  [2]float64{10, 0},
+					Acceleration: [2]float64{10, 0},
+				},
+			)
+			phys.Accelerate(tt.axis, tt.dir, tt.dt)
+			if phys.Velocity(tt.axis) != tt.expectedVelocity {
+				t.Errorf("got %f, want %f", phys.Velocity(tt.axis), tt.expectedVelocity)
 			}
 		})
 	}
 }
 
-func TestDecelerateX(t *testing.T) {
+func TestDecelerate(t *testing.T) {
 	var testValues = []struct {
-		testName          string
-		dt                float64
-		expectedVelocityX float64
+		testName         string
+		axis             int
+		dt               float64
+		expectedVelocity float64
 	}{
-		{"Decelarate ", 0.5, 0},
-		{"Velocity after decelaration cannot be less than 0", 0.5, 0},
+		{"Decelerate ", physic.AxisX, .5, 0},
+		{"Velocity after deceleration cannot be less than 0", physic.AxisX, .5, 0},
 	}
-	phys := physic.NewPhysics(physic.Params{
-		MaxVelocityX:  10,
-		AccelerationX: 10,
-	})
-	phys.AccelerateX(physic.DirectionRight, 0.5)
 	for _, tt := range testValues {
 		t.Run(tt.testName, func(t *testing.T) {
-			phys.DecelerateX(tt.dt)
-			if phys.VelocityX() != tt.expectedVelocityX {
-				t.Errorf("got %f, want %f", phys.VelocityX(), tt.expectedVelocityX)
+			phys := physic.NewPhysics(physic.Params{
+				MaxVelocity:  [2]float64{10, 0},
+				Acceleration: [2]float64{10, 0},
+			})
+			phys.Accelerate(tt.axis, physic.DirectionRight, .5)
+			phys.Decelerate(tt.axis, tt.dt)
+			if phys.Velocity(tt.axis) != tt.expectedVelocity {
+				t.Errorf("got %f, want %f", phys.Velocity(tt.axis), tt.expectedVelocity)
 			}
 		})
 	}
@@ -68,13 +72,11 @@ func TestDisplacement(t *testing.T) {
 	}
 
 	phys := physic.NewPhysics(physic.Params{
-		MaxVelocityX:  10,
-		MaxVelocityY:  10,
-		AccelerationX: 10,
-		AccelerationY: 5,
+		MaxVelocity:  [2]float64{10, 10},
+		Acceleration: [2]float64{10, 5},
 	})
-	phys.AccelerateX(physic.DirectionRight, 0.5)
-	phys.AccelerateY(physic.DirectionUp, 0.5)
+	phys.Accelerate(physic.AxisX, physic.DirectionRight, 0.5)
+	phys.Accelerate(physic.AxisY, physic.DirectionUp, 0.5)
 	for _, tt := range testValues {
 		t.Run(tt.testName, func(t *testing.T) {
 			phys.Gravity = tt.gravity
@@ -86,47 +88,27 @@ func TestDisplacement(t *testing.T) {
 	}
 }
 
-func TestSetVelocityX(t *testing.T) {
+func TestSetVelocity(t *testing.T) {
 	var testValues = []struct {
-		testName          string
-		velocityX         float64
-		expectedVelocityX float64
+		testName         string
+		axis             int
+		velocity         float64
+		expectedVelocity float64
 	}{
-		{"Velocity X lower than max", 5, 5},
-		{"Velocity X greater than max", 15, 10},
+		{"Velocity X lower than max", physic.AxisX, 5, 5},
+		{"Velocity X greater than max", physic.AxisX, 15, 10},
+		{"Velocity Y lower than max", physic.AxisX, 5, 5},
+		{"Velocity Y greater than max", physic.AxisX, 15, 10},
 	}
 
 	phys := physic.NewPhysics(physic.Params{
-		MaxVelocityX: 10,
+		MaxVelocity: [2]float64{10, 10},
 	})
 	for _, tt := range testValues {
 		t.Run(tt.testName, func(t *testing.T) {
-			phys.SetVelocityX(tt.velocityX)
-			if phys.VelocityX() != tt.expectedVelocityX {
-				t.Errorf("Expected velocity X is %f, got %f", tt.expectedVelocityX, phys.VelocityX())
-			}
-		})
-	}
-}
-
-func TestSetVelocityY(t *testing.T) {
-	var testValues = []struct {
-		testName          string
-		velocityY         float64
-		expectedVelocityY float64
-	}{
-		{"Velocity Y lower than max", 5, 5},
-		{"Velocity Y greater than max", 15, 10},
-	}
-
-	phys := physic.NewPhysics(physic.Params{
-		MaxVelocityY: 10,
-	})
-	for _, tt := range testValues {
-		t.Run(tt.testName, func(t *testing.T) {
-			phys.SetVelocityY(tt.velocityY)
-			if phys.VelocityY() != tt.expectedVelocityY {
-				t.Errorf("Expected velocity Y is %f, got %f", tt.expectedVelocityY, phys.VelocityY())
+			phys.SetVelocity(tt.axis, tt.velocity)
+			if phys.Velocity(tt.axis) != tt.expectedVelocity {
+				t.Errorf("Expected velocity is %f, got %f", tt.expectedVelocity, phys.Velocity(tt.axis))
 			}
 		})
 	}

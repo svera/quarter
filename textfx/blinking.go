@@ -5,7 +5,7 @@ import (
 	"github.com/faiface/pixel/text"
 )
 
-// Blinking implements text writing on screen with applied effects
+// Blinking implements text writing on screen applying a flashing effect
 type Blinking struct {
 	Frequency float64
 	elapsed   float64
