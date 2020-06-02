@@ -1,199 +1,47 @@
 {
     "version": "1",
     "sheet": "assets/adventurer3.png",
-    "anims": [
-        {
-            "name": "idle",
+    "anims": {
+        "idle": {
             "frames": 13,
             "cycle": "circular",
             "duration": 1.04,
             "y_offset": 62,
             "width": 19,
-            "height": 22,
-            "bounding_shapes": [
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                },
-                {
-                    "type": "box",
-                    "parameters": {
-                        "min": {
-                            "x": -4.5,
-                            "y": -11
-                        },
-                        "max": {
-                            "x": 4.5,
-                            "y": 11
-                        }
-                    }
-                }
-            ]
+            "height": 22
         },
-        {
+        "running": {
             "name": "running",
             "frames": 8,
             "cycle": "circular",
             "duration": 0.64,
             "y_offset": 40,
             "width": 19,
-            "height": 22,
-            "bounding_shapes": [
+            "height": 22
+        },
+        "jumping": {
+            "frames": 3,
+            "cycle": "single",
+            "duration": 0.64,
+            "y_offset": 18,
+            "width": 19,
+            "height": 22
+        },
+        "falling": {
+            "frames": 3,
+            "cycle": "single_reverse",
+            "duration": 0.64,
+            "y_offset": 18,
+            "width": 19,
+            "height": 22
+        }
+    },
+    "bounds": {
+        "idle": {
+            "shapes": [
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -206,7 +54,7 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -219,7 +67,7 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -232,7 +80,7 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -245,7 +93,7 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -258,7 +106,7 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -271,7 +119,7 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -284,7 +132,72 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -297,18 +210,11 @@
                 }
             ]
         },
-        {
-            "name": "jumping",
-            "frames": 3,
-            "cycle": "single",
-            "duration": 0.64,
-            "y_offset": 18,
-            "width": 19,
-            "height": 22,
-            "bounding_shapes": [
+        "running": {
+            "shapes": [
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -321,7 +227,115 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                }
+            ]
+        },
+        "jumping": {
+            "shapes": [
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -4.5,
+                            "y": -11
+                        },
+                        "max": {
+                            "x": 4.5,
+                            "y": 11
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -9
@@ -334,7 +348,7 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -7
@@ -347,18 +361,11 @@
                 }
             ]
         },
-        {
-            "name": "falling",
-            "frames": 3,
-            "cycle": "single_reverse",
-            "duration": 0.64,
-            "y_offset": 18,
-            "width": 19,
-            "height": 22,
-            "bounding_shapes": [
+        "falling": {
+            "shapes": [
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -11
@@ -371,7 +378,7 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -9
@@ -384,7 +391,7 @@
                 },
                 {
                     "type": "box",
-                    "parameters": {
+                    "values": {
                         "min": {
                             "x": -4.5,
                             "y": -7
@@ -397,5 +404,5 @@
                 }
             ]
         }
-    ]
+    }
 }
