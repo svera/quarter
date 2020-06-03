@@ -14,13 +14,13 @@ const (
 	DirectionDown  = -1
 )
 
-// Movement axis
+// Movement axes
 const (
 	AxisX = iota
 	AxisY
 )
 
-// Params is a set of values used to calculate velocuty and displacement in both axis
+// Params is a set of values used to calculate velocity and displacement in both axes
 type Params struct {
 	MaxVelocity  [2]float64
 	Acceleration [2]float64
@@ -29,9 +29,9 @@ type Params struct {
 
 // Physics controls movement of an element
 type Physics struct {
-	// Speed of movement of the item in the X (horizontal) axis
+	// Speed of movement of the item in both X and Y axes
 	// negative values will move item to the left or down, positive ones to the right or up,
-	// depending on the axys
+	// depending on the axis
 	velocity [2]float64
 
 	Params
@@ -75,7 +75,7 @@ func (p *Physics) SetVelocity(axis int, value float64) {
 	}
 }
 
-// Displacement returns the movement an item must do both in X and Y axis
+// Displacement returns the movement an item must do both in X and Y axes
 // after a dt time has passed
 func (p *Physics) Displacement(dt float64) pixel.Vec {
 	p.velocity[AxisY] -= p.Gravity * dt

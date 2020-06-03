@@ -18,18 +18,20 @@ func TestAccelerate(t *testing.T) {
 	}{
 		{"Accelerate to the right", physic.AxisX, physic.DirectionRight, 0.5, 5},
 		{"Accelerate to the left", physic.AxisX, physic.DirectionLeft, 0.5, -5},
+		{"Accelerate upwards", physic.AxisY, physic.DirectionUp, 0.5, 5},
+		{"Accelerate downwards", physic.AxisY, physic.DirectionDown, 0.5, -5},
 	}
 	for _, tt := range testValues {
 		t.Run(tt.testName, func(t *testing.T) {
 			phys := physic.NewPhysics(
 				physic.Params{
-					MaxVelocity:  [2]float64{10, 0},
-					Acceleration: [2]float64{10, 0},
+					MaxVelocity:  [2]float64{10, 10},
+					Acceleration: [2]float64{10, 10},
 				},
 			)
 			phys.Accelerate(tt.axis, tt.dir, tt.dt)
 			if phys.Velocity(tt.axis) != tt.expectedVelocity {
-				t.Errorf("got %f, want %f", phys.Velocity(tt.axis), tt.expectedVelocity)
+				t.Errorf("%s failed, got %f, expected %f", tt.testName, phys.Velocity(tt.axis), tt.expectedVelocity)
 			}
 		})
 	}
@@ -54,7 +56,7 @@ func TestDecelerate(t *testing.T) {
 			phys.Accelerate(tt.axis, physic.DirectionRight, .5)
 			phys.Decelerate(tt.axis, tt.dt)
 			if phys.Velocity(tt.axis) != tt.expectedVelocity {
-				t.Errorf("got %f, want %f", phys.Velocity(tt.axis), tt.expectedVelocity)
+				t.Errorf("%s failed, got %f, expected %f", tt.testName, phys.Velocity(tt.axis), tt.expectedVelocity)
 			}
 		})
 	}
@@ -82,7 +84,7 @@ func TestDisplacement(t *testing.T) {
 			phys.Gravity = tt.gravity
 			dis := phys.Displacement(0.5)
 			if !reflect.DeepEqual(dis, tt.expectedDisplacement) {
-				t.Errorf("Expected displacement of %v, got %v", tt.expectedDisplacement, dis)
+				t.Errorf("%s failed, expected displacement of %v, got %v", tt.testName, tt.expectedDisplacement, dis)
 			}
 		})
 	}
