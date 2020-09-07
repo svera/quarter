@@ -16,7 +16,7 @@ type Game struct {
 	imd    *imdraw.IMDraw
 }
 
-func NewGame(width, height float64) *Game {
+func NewGame(canvas *pixelgl.Canvas, imd *imdraw.IMDraw) *Game {
 	h, err := NewHero("hero.json")
 	if err != nil {
 		panic(err)
@@ -30,8 +30,8 @@ func NewGame(width, height float64) *Game {
 		hero:  h,
 		level: l,
 		// Canvas origin of coordinates will be at its center
-		canvas: pixelgl.NewCanvas(pixel.R(-width/2, -height/2, width/2, height/2)),
-		imd:    imdraw.New(nil),
+		canvas: canvas,
+		imd:    imd,
 	}
 
 	return &g

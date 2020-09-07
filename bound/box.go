@@ -154,6 +154,7 @@ func (bb *Box) bottom() float64 {
 
 // Draw draws the bounding box surface on the passed target with the specified color for debugging purposes
 func (bb *Box) Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target) {
+	imd.Reset()
 	imd.Color = *color
 	imd.Push(
 		pixel.V(bb.left(), bb.bottom()),

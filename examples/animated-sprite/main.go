@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/svera/quarter/scene"
 )
@@ -33,9 +34,13 @@ func run() {
 		second = time.Tick(time.Second)
 	)
 
+	// Canvas origin of coordinates will be at its center
+	canvas := pixelgl.NewCanvas(pixel.R(-width/2, -height/2, width/2, height/2))
+	imd := imdraw.New(nil)
+
 	scenes := map[string]scene.Scene{
-		"attract": NewAttract(),
-		"game":    NewGame(width, height),
+		"attract": NewAttract(imd),
+		"game":    NewGame(canvas, imd),
 	}
 	last := time.Now()
 
