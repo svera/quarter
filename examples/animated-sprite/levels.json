@@ -1,24 +1,11 @@
 {
     "version": "1",
-    "levels": [
-        {
-            "name": "level 1",
-            "limits": {
-                "min": {
-                    "x": -128,
-                    "y": -96
-                },
-                "max": {
-                    "x": 128,
-                    "y": 96
-                }
-            },
-            "layers": [
-                {
-                    "name": "background",
+    "levels": {
+        "level1": {
+            "layers": {
+                "background": {
                     "image": {
-                        "path": "assets/sky.png",
-                        "extra": {}
+                        "path": "assets/sky.png"
                     },
                     "grid": {
                         "assets": {
@@ -120,29 +107,44 @@
                             {
                                 "asset": 0,
                                 "x": 0,
-                                "y": -3,
-                                "bounded": true
+                                "y": -3
                             }
                         ]
-                    },
-                    "bounds": [
-                        {
-                            "type": "box",
-                            "values": {
-                                "min": {
-                                    "x": -128,
-                                    "y": -96
-                                },
-                                "max": {
-                                    "x": 128,
-                                    "y": -80
-                                }
-                            }
-                        }
-                    ]
+                    }
                 }
-            ],
-            "extra": ""
+            }
         }
-    ]
+    },
+    "bounds": {
+        "level1-background": {
+            "shapes": [
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": -128,
+                            "y": -96
+                        },
+                        "max": {
+                            "x": 128,
+                            "y": -80
+                        }
+                    }
+                },
+                {
+                    "type": "box",
+                    "values": {
+                        "min": {
+                            "x": 0,
+                            "y": -48
+                        },
+                        "max": {
+                            "x": 16,
+                            "y": -32
+                        }
+                    }
+                }
+            ]
+        }
+    }
 }

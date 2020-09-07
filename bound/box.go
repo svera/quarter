@@ -1,4 +1,4 @@
-package collision
+package bound
 
 import (
 	"image/color"
@@ -8,14 +8,14 @@ import (
 	"github.com/faiface/pixel/imdraw"
 )
 
-// BoundingBox is a Rect with methods to resolve collisions
-type BoundingBox struct {
+// Box is a Rect with methods to resolve collisions
+type Box struct {
 	pixel.Rect
 }
 
-// NewBoundingBox returns a new BoundingBox instance.
-func NewBoundingBox(min pixel.Vec, max pixel.Vec) *BoundingBox {
-	return &BoundingBox{
+// NewBox returns a new Box instance.
+func NewBox(min pixel.Vec, max pixel.Vec) *Box {
+	return &Box{
 		pixel.Rect{
 			Min: min,
 			Max: max,
@@ -24,38 +24,38 @@ func NewBoundingBox(min pixel.Vec, max pixel.Vec) *BoundingBox {
 }
 
 // Collides returns true if the bounding box collides with the passed shape
-func (bb *BoundingBox) Collides(other Shaper) bool {
+func (bb *Box) Collides(other Shaper) bool {
 	switch t := other.Shape().(type) {
-	case *BoundingBox:
+	case *Box:
 		return bb.Intersects(t.Rect)
-	case *BoundingCircle:
+	case *Circle:
 		return bb.IntersectCircle(t.Circle) != pixel.ZV
 	}
 	return false
 }
 
-// Shape returns the BoundingBox instance
-func (bb *BoundingBox) Shape() Shape {
+// Shape returns the Box instance
+func (bb *Box) Shape() Shape {
 	return bb
 }
 
-func (bb *BoundingBox) Align(pos pixel.Vec) {
+func (bb *Box) Align(pos pixel.Vec) {
 	bb.Rect = bb.Moved(pos.Sub(bb.Center()))
 }
 
 // Resolve checks if the bounding box will collide with another bounding box if it moves
 // a certain delta
-func (bb *BoundingBox) Resolve(delta pixel.Vec, others ...Shaper) Solution {
+func (bb *Box) Resolve(delta pixel.Vec, others ...Shaper) Solution {
 	sol := Solution{}
 
 	for _, other := range others {
 		switch t := other.Shape().(type) {
-		case *BoundingBox:
+		case *Box:
 			sol = bb.resolveAgainstBoundingBox(t, delta)
 			if sol.CollisionAxis != AxisNone {
 				return sol
 			}
-		case *BoundingCircle:
+		case *Circle:
 			sol = bb.resolveAgainstBoundingCircle(t, delta)
 			if sol.CollisionAxis != AxisNone {
 				return sol
@@ -65,8 +65,8 @@ func (bb *BoundingBox) Resolve(delta pixel.Vec, others ...Shaper) Solution {
 	return sol
 }
 
-func (bb *BoundingBox) resolveAgainstBoundingBox(other *BoundingBox, delta pixel.Vec) Solution {
-	bbMoved := &BoundingBox{
+func (bb *Box) resolveAgainstBoundingBox(other *Box, delta pixel.Vec) Solution {
+	bbMoved := &Box{
 		bb.Moved(delta),
 	}
 
@@ -100,8 +100,8 @@ func (bb *BoundingBox) resolveAgainstBoundingBox(other *BoundingBox, delta pixel
 	return sol
 }
 
-func (bb *BoundingBox) resolveAgainstBoundingCircle(other *BoundingCircle, delta pixel.Vec) Solution {
-	bbMoved := &BoundingBox{
+func (bb *Box) resolveAgainstBoundingCircle(other *Circle, delta pixel.Vec) Solution {
+	bbMoved := &Box{
 		bb.Moved(delta),
 	}
 
@@ -133,27 +133,28 @@ func (bb *BoundingBox) resolveAgainstBoundingCircle(other *BoundingCircle, delta
 }
 
 // left returns BoundBox's left side X coordinate
-func (bb *BoundingBox) left() float64 {
+func (bb *Box) left() float64 {
 	return bb.Min.X
 }
 
 // right returns BoundBox's right side X coordinate
-func (bb *BoundingBox) right() float64 {
+func (bb *Box) right() float64 {
 	return bb.Max.X
 }
 
 // top returns BoundBox's top side Y coordinate
-func (bb *BoundingBox) top() float64 {
+func (bb *Box) top() float64 {
 	return bb.Max.Y
 }
 
 // bottom returns BoundBox's bottom side Y coordinate
-func (bb *BoundingBox) bottom() float64 {
+func (bb *Box) bottom() float64 {
 	return bb.Min.Y
 }
 
 // Draw draws the bounding box surface on the passed target with the specified color for debugging purposes
-func (bb *BoundingBox) Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target) {
+func (bb *Box) Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target) {
+	imd.Reset()
 	imd.Color = *color
 	imd.Push(
 		pixel.V(bb.left(), bb.bottom()),

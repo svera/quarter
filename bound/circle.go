@@ -1,4 +1,4 @@
-package collision
+package bound
 
 import (
 	"image/color"
@@ -8,12 +8,12 @@ import (
 	"github.com/faiface/pixel/imdraw"
 )
 
-type BoundingCircle struct {
+type Circle struct {
 	pixel.Circle
 }
 
-func NewBoundingCircle(x, y, r float64) *BoundingCircle {
-	return &BoundingCircle{
+func NewCircle(x, y, r float64) *Circle {
+	return &Circle{
 		pixel.Circle{
 			Center: pixel.V(x, y),
 			Radius: r,
@@ -21,34 +21,34 @@ func NewBoundingCircle(x, y, r float64) *BoundingCircle {
 	}
 }
 
-func (bc *BoundingCircle) Collides(other Shaper) bool {
+func (bc *Circle) Collides(other Shaper) bool {
 	switch t := other.Shape().(type) {
-	case *BoundingBox:
+	case *Box:
 		return bc.IntersectRect(t.Rect) != pixel.ZV
-	case *BoundingCircle:
+	case *Circle:
 		return bc.Intersect(t.Circle).Radius != 0
 	}
 	return false
 }
 
-func (bc *BoundingCircle) Shape() Shape {
+func (bc *Circle) Shape() Shape {
 	return bc
 }
 
 // TODO
-func (bb *BoundingCircle) Align(pos pixel.Vec) {
+func (bb *Circle) Align(pos pixel.Vec) {
 	return
 }
 
 // TODO
-func (bc *BoundingCircle) Resolve(delta pixel.Vec, others ...Shaper) Solution {
+func (bc *Circle) Resolve(delta pixel.Vec, others ...Shaper) Solution {
 	sol := Solution{}
 
 	return sol
 }
 
 // This code is wrong, get the one from bb
-func (bc *BoundingCircle) resolveAgainstBoundingBox(other *BoundingBox, distance pixel.Vec) Solution {
+func (bc *Circle) resolveAgainstBoundingBox(other *Box, distance pixel.Vec) Solution {
 	sol := Solution{
 		Object: other,
 	}
@@ -71,7 +71,7 @@ func (bc *BoundingCircle) resolveAgainstBoundingBox(other *BoundingBox, distance
 	return sol
 }
 
-func (bc *BoundingCircle) Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target) {
+func (bc *Circle) Draw(color *color.RGBA, imd *imdraw.IMDraw, target pixel.Target) {
 	imd.Color = *color
 	imd.Push(bc.Center)
 	imd.Circle(bc.Radius, 0)

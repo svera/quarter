@@ -11,10 +11,10 @@ import (
 func TestSetCurrentAnim(t *testing.T) {
 	var testValues = []struct {
 		testName      string
-		ID            int
+		ID            string
 		expectedError string
 	}{
-		{"Animation ID below 0 does not exist", -1, fmt.Sprintf(animation.ErrorAnimationDoesNotExist, -1)},
+		{"Inexistent Animation ID throws an error", "NonExistentID", fmt.Sprintf(animation.ErrorAnimationDoesNotExist, "NonExistentID")},
 	}
 	for _, tt := range testValues {
 		t.Run(tt.testName, func(t *testing.T) {
