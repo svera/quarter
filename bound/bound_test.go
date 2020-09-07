@@ -168,12 +168,12 @@ func TestLoad(t *testing.T) {
 	})
 
 	t.Run("Only version 1 is supported", func(t *testing.T) {
-		levelData := []byte(`{"version": "1", "bounds": [{}]}`)
+		levelData := []byte(`{"version": "1", "bounds": {"idle": {"shapes": []}}}`)
 		r := bytes.NewReader(levelData)
 		if _, err := bound.Deserialize(r); err != nil {
 			t.Errorf("Valid collision data is not loaded")
 		}
-		levelData = []byte(`{"version": "2", "bounds": [{}]}`)
+		levelData = []byte(`{"version": "2", "bounds": {"idle": {"shapes": []}}}`)
 		r = bytes.NewReader(levelData)
 		if _, err := bound.Deserialize(r); err == nil {
 			t.Errorf("Invalid collision data is loaded")

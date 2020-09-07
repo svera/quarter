@@ -39,7 +39,7 @@ const (
 
 // Returned errors
 const (
-	ErrorAnimationDoesNotExist = "Animation %d does not exist"
+	ErrorAnimationDoesNotExist = "Animation '%s' does not exist"
 )
 
 // To convert string values used in sprite definition file to integer values used internally

@@ -17,12 +17,12 @@ func TestLoad(t *testing.T) {
 	})
 
 	t.Run("Only version 1 is supported", func(t *testing.T) {
-		levelData := []byte(`{"version": "1", "levels": [{}]}`)
+		levelData := []byte(`{"version": "1", "levels": {"name": {}}}`)
 		r := bytes.NewReader(levelData)
 		if _, err := level.Deserialize(r); err != nil {
 			t.Errorf("Valid levels data is not loaded")
 		}
-		levelData = []byte(`{"version": "2", "levels": [{}]}`)
+		levelData = []byte(`{"version": "2", "levels": {"name": {}}}`)
 		r = bytes.NewReader(levelData)
 		if _, err := level.Deserialize(r); err == nil {
 			t.Errorf("Invalid levels data is loaded")

@@ -2,16 +2,6 @@
     "version": "1",
     "levels": {
         "level1": {
-            "limits": {
-                "min": {
-                    "x": -128,
-                    "y": -96
-                },
-                "max": {
-                    "x": 128,
-                    "y": 96
-                }
-            },
             "layers": {
                 "background": {
                     "image": {

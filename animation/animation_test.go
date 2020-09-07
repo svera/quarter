@@ -14,7 +14,7 @@ func TestSetCurrentAnim(t *testing.T) {
 		ID            string
 		expectedError string
 	}{
-		{"Inexistent Animation ID throws an error", "NonExistentID", fmt.Sprintf(animation.ErrorAnimationDoesNotExist, -1)},
+		{"Inexistent Animation ID throws an error", "NonExistentID", fmt.Sprintf(animation.ErrorAnimationDoesNotExist, "NonExistentID")},
 	}
 	for _, tt := range testValues {
 		t.Run(tt.testName, func(t *testing.T) {
