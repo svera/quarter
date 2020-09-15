@@ -59,6 +59,7 @@ type Animation struct {
 	elapsed            float64
 	Position           pixel.Vec
 	Dir                float64
+	over               bool
 }
 
 // NewAnimation returns a new Sprite instance to be drawn at position x, y
@@ -126,6 +127,7 @@ func (a *Animation) SetCurrentAnim(ID string) error {
 			a.currentFrameNumber = a.lastFrame()
 		}
 		a.elapsed = 0
+		a.over = false
 	}
 	return nil
 }
@@ -170,6 +172,7 @@ func (a *Animation) nextFrameIndex() int {
 	if !a.isLastFrame(a.currentFrameNumber) {
 		return a.currentFrameNumber + 1
 	}
+	a.over = true
 	return a.currentFrameNumber
 }
 
@@ -181,6 +184,12 @@ func (a *Animation) isLastFrame(number int) bool {
 	return len(a.anims[a.currentAnimID].frames)-1 == number
 }
 
+// CurrentFrameNumber returns the frame number that it is drawn
 func (a *Animation) CurrentFrameNumber() int {
 	return a.currentFrameNumber
+}
+
+// IsOver returns wheter an animation is over or not
+func (a *Animation) IsOver() bool {
+	return a.over
 }

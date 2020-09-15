@@ -14,6 +14,7 @@ type Game struct {
 	level  *Level
 	canvas *pixelgl.Canvas
 	imd    *imdraw.IMDraw
+	paused bool
 }
 
 func NewGame(canvas *pixelgl.Canvas, imd *imdraw.IMDraw) *Game {
@@ -38,8 +39,11 @@ func NewGame(canvas *pixelgl.Canvas, imd *imdraw.IMDraw) *Game {
 }
 
 func (g *Game) Loop(win *pixelgl.Window, dt float64) (string, error) {
-	g.imd.Clear()
 	g.readInput(win, dt)
+	if g.paused {
+		return "game", nil
+	}
+	g.imd.Clear()
 	delta := g.hero.Displacement(dt)
 	sol := g.hero.boundingShape().Resolve(delta, g.level.Bounds["level1-background"]...)
 
@@ -50,6 +54,7 @@ func (g *Game) Loop(win *pixelgl.Window, dt float64) (string, error) {
 
 	g.imd.Draw(g.canvas)
 	g.canvas.Draw(win, pixel.IM.Moved(win.Bounds().Center()).Scaled(win.Bounds().Center(), zoom))
+
 	return "game", nil
 }
 
@@ -62,5 +67,7 @@ func (g *Game) readInput(win *pixelgl.Window, dt float64) {
 		g.hero.Right(dt)
 	} else if !win.Pressed(pixelgl.KeyLeft) && !win.Pressed(pixelgl.KeyRight) && g.hero.Velocity(physic.AxisX) != 0 {
 		g.hero.Decelerate(physic.AxisX, dt)
+	} else if win.JustPressed(pixelgl.KeyP) {
+		g.paused = !g.paused
 	}
 }
